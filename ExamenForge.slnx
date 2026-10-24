@@ -1,3 +1,5 @@
 <Solution>
-  <Project Path="ExamenForge.csproj" />
+  <Project Path="ExamForge.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
 </Solution>

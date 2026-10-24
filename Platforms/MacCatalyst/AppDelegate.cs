@@ -1,6 +1,6 @@
 ﻿using Foundation;
 
-namespace ExamenForge
+namespace ExamForge
 {
     [Register("AppDelegate")]
     public class AppDelegate : MauiUIApplicationDelegate

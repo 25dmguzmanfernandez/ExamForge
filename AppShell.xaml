@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Shell
-    x:Class="ExamenForge.AppShell"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:ExamenForge"
-    Title="ExamenForge">
+<Shell x:Class="ExamForge.AppShell"
+       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:views="clr-namespace:ExamForge.Views"
+       FlyoutBehavior="Disabled"
+       Shell.BackgroundColor="{StaticResource AzulOscuro}"
+       Shell.TitleColor="White"
+       Shell.TabBarBackgroundColor="White"
+       Shell.TabBarTitleColor="{StaticResource AzulOscuro}">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <!-- Primera pantalla: portal (sin barra de pestañas) -->
+    <ShellContent Title="Portal" ContentTemplate="{DataTemplate views:PortalPage}" Route="portal" />
 
+    <!-- Resto de la app -->
+    <TabBar>
+        <ShellContent Title="Inicio" ContentTemplate="{DataTemplate views:InicioPage}" Route="inicio" />
+        <ShellContent Title="Asignaturas" ContentTemplate="{DataTemplate views:AsignaturasPage}" Route="asignaturas" />
+        <ShellContent Title="Preguntas" ContentTemplate="{DataTemplate views:BancoPreguntasPage}" Route="banco" />
+    </TabBar>
 </Shell>

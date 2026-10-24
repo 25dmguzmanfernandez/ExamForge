@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace ExamenForge
+namespace ExamForge
 {
     public partial class App : Application
     {

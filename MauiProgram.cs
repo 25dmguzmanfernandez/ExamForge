@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace ExamenForge
+namespace ExamForge
 {
     public static class MauiProgram
     {

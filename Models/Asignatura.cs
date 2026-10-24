@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ExamenForge.Models
+namespace ExamForge.Models
 {
     public class Asignatura
     {

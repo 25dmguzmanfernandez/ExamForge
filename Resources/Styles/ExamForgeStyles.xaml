@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+    
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <Color x:Key="AzulOscuro">#1F3A5F</Color>
+    <Color x:Key="AzulClaro">#EAF1FB</Color>
+    <Color x:Key="Acento">#F59E0B</Color>
+    <Color x:Key="Texto">#1B2430</Color>
+    <Color x:Key="Error">#C62828</Color>
+
+    <Style x:Key="Titulo" TargetType="Label">
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="TextColor" Value="{StaticResource AzulOscuro}" />
+    </Style>
+    
+    <Style x:Key="Tarjeta" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource AzulClaro}" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 14" />
+        <Setter Property="Stroke" Value="Transparent" />
+        <Setter Property="Padding" Value="14" />
+    </Style>
+    
+    <Style x:Key="BotonPrincipal" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource Acento}" />
+        <Setter Property="TextColor" Value="{StaticResource AzulOscuro}" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="HeightRequest" Value="52" />
+        <Setter Property="CornerRadius" Value="12" />
+    </Style>
+    
+    <Style x:Key="BotonSecundario" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource AzulOscuro}" />
+        <Setter Property="TextColor" Value="White" />
+        <Setter Property="HeightRequest" Value="52" />
+        <Setter Property="CornerRadius" Value="12" />
+    </Style>
+</ResourceDictionary>

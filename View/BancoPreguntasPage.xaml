@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="ExamForge.Views.BancoPreguntasPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Banco de preguntas" BackgroundColor="White">
+    <Grid RowDefinitions="*,Auto" Padding="16" RowSpacing="10">
+        <!-- Cada elemento necesita las propiedades públicas Enunciado y Tema -->
+        <CollectionView x:Name="ListaPreguntas"
+                        SelectionMode="Single" SelectionChanged="PreguntaSeleccionada">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Style="{StaticResource Tarjeta}" Margin="0,4">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="{Binding Enunciado}" FontAttributes="Bold" TextColor="{StaticResource Texto}" />
+                            <Label Text="{Binding Tema}" FontSize="12" TextColor="{StaticResource AzulOscuro}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <Label Text="No hay preguntas guardadas." HorizontalTextAlignment="Center" VerticalOptions="Center" />
+            </CollectionView.EmptyView>
+        </CollectionView>
+
+        <Button Grid.Row="1" Text="+ Añadir pregunta" Style="{StaticResource BotonPrincipal}" Clicked="AnadirPreguntaClicked" />
+    </Grid>
+</ContentPage>

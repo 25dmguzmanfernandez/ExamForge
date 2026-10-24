@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="ExamForge.Views.AsignaturasPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Asignaturas y temas" BackgroundColor="White">
+
+    <Grid RowDefinitions="Auto,*,Auto,*,Auto" Padding="16" RowSpacing="10">
+        <Label Text="Asignaturas" Style="{StaticResource Titulo}" />
+
+        <CollectionView Grid.Row="1" x:Name="ListaAsignaturas"
+                        SelectionMode="Single" SelectionChanged="AsignaturaSeleccionada">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Style="{StaticResource Tarjeta}" Margin="0,4">
+                        <Label Text="{Binding Nombre}" FontSize="16" TextColor="{StaticResource Texto}" />
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <Label Text="Aún no hay asignaturas." HorizontalTextAlignment="Center" />
+            </CollectionView.EmptyView>
+        </CollectionView>
+
+        <Label Grid.Row="2" x:Name="TemasLabel" Text="Temas" Style="{StaticResource Titulo}" FontSize="18" />
+
+        <CollectionView Grid.Row="3" x:Name="ListaTemas" SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Style="{StaticResource Tarjeta}" Margin="0,4">
+                        <Label Text="{Binding Nombre}" TextColor="{StaticResource Texto}" />
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <Label Text="Sin temas." HorizontalTextAlignment="Center" />
+            </CollectionView.EmptyView>
+        </CollectionView>
+
+        <VerticalStackLayout Grid.Row="4" Spacing="8">
+            <Entry x:Name="NombreEntry" Placeholder="Nombre de asignatura o tema" MaxLength="40" />
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                <Button Text="+ Asignatura" Style="{StaticResource BotonPrincipal}" Clicked="AgregarAsignaturaClicked" />
+                <Button Grid.Column="1" Text="+ Tema" Style="{StaticResource BotonSecundario}" Clicked="AgregarTemaClicked" />
+            </Grid>
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

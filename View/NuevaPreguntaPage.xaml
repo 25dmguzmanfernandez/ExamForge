@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="ExamForge.Views.NuevaPreguntaPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Pregunta" BackgroundColor="White">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="10">
+            <Label Text="Enunciado" />
+            <Editor x:Name="EnunciadoEditor" Placeholder="Escribe la pregunta" HeightRequest="90" AutoSize="TextChanges" />
+
+            <Label Text="Opciones" />
+            <Entry x:Name="OpcionAEntry" Placeholder="Opción A" />
+            <Entry x:Name="OpcionBEntry" Placeholder="Opción B" />
+            <Entry x:Name="OpcionCEntry" Placeholder="Opción C" />
+            <Entry x:Name="OpcionDEntry" Placeholder="Opción D" />
+
+            <Picker x:Name="RespuestaPicker" Title="Respuesta correcta">
+                <Picker.Items>
+                    <x:String>A</x:String>
+                    <x:String>B</x:String>
+                    <x:String>C</x:String>
+                    <x:String>D</x:String>
+                </Picker.Items>
+            </Picker>
+
+            <!-- Los temas se cargan desde código -->
+            <Picker x:Name="TemaPicker" Title="Tema" />
+
+            <Label x:Name="ErrorLabel" TextColor="{StaticResource Error}" IsVisible="False" />
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="8" Margin="0,10,0,0">
+                <Button Text="Cancelar" Style="{StaticResource BotonSecundario}" Clicked="CancelarClicked" />
+                <Button Grid.Column="1" Text="Guardar" Style="{StaticResource BotonPrincipal}" Clicked="GuardarClicked" />
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

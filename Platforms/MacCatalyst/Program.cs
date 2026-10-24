@@ -1,7 +1,7 @@
 ﻿using ObjCRuntime;
 using UIKit;
 
-namespace ExamenForge
+namespace ExamForge
 {
     public class Program
     {

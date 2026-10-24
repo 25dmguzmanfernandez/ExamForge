@@ -1,3 +1,3 @@
-# ExamenForge
-Proyecto de aplicaciones multimedia "ExamenForge".
+# ExamForge
+Proyecto de aplicaciones multimedia "ExamForge".
 Mariano

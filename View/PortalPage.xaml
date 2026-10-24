@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="ExamForge.Views.PortalPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{StaticResource AzulOscuro}">
+    <ScrollView>
+        <VerticalStackLayout Padding="30" Spacing="12" VerticalOptions="Center">
+
+            <Label Text="ExamForge" FontSize="36" FontAttributes="Bold"
+                   TextColor="White" HorizontalOptions="Center" />
+
+            <Label x:Name="TituloLabel" FontSize="16" TextColor="{StaticResource AzulClaro}"
+                   HorizontalOptions="Center" Margin="0,0,0,16" />
+
+            <Border Style="{StaticResource Tarjeta}">
+                <VerticalStackLayout Spacing="8">
+                    <Entry x:Name="NombreEntry" Placeholder="Nombre" MaxLength="30" TextColor="{StaticResource Texto}" />
+
+                    <!-- Solo se ven la primera vez (registro) -->
+                    <Entry x:Name="ApellidoEntry" Placeholder="Apellido" MaxLength="40" TextColor="{StaticResource Texto}" />
+                    <Entry x:Name="CorreoEntry" Placeholder="Correo electrónico" Keyboard="Email" MaxLength="60" TextColor="{StaticResource Texto}" />
+
+                    <Entry x:Name="ClaveEntry" Placeholder="Contraseña" IsPassword="True" MaxLength="30" TextColor="{StaticResource Texto}" />
+
+                    <Label x:Name="ErrorLabel" TextColor="{StaticResource Error}" IsVisible="False" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Button x:Name="AccederButton" Style="{StaticResource BotonPrincipal}" Clicked="AccederClicked" Margin="0,8,0,0" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

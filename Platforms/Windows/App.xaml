@@ -1,8 +1,8 @@
 ﻿<maui:MauiWinUIApplication
-    x:Class="ExamenForge.WinUI.App"
+    x:Class="ExamForge.WinUI.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:maui="using:Microsoft.Maui"
-    xmlns:local="using:ExamenForge.WinUI">
+    xmlns:local="using:ExamForge.WinUI">
 
 </maui:MauiWinUIApplication>

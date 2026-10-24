@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="ExamForge.Views.InicioPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="ExamForge" BackgroundColor="White">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+            <Label Text="ExamForge" Style="{StaticResource Titulo}" FontSize="32" />
+
+            <Border Style="{StaticResource Tarjeta}">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="¡Hola, alumno!" FontSize="20" FontAttributes="Bold" TextColor="{StaticResource Texto}" />
+                    <Label Text="Organiza tus asignaturas y practica antes del examen." TextColor="{StaticResource Texto}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Button Text="Mis asignaturas" Style="{StaticResource BotonSecundario}" Clicked="AsignaturasClicked" />
+            <Button Text="Banco de preguntas" Style="{StaticResource BotonSecundario}" Clicked="BancoClicked" />
+            <Button Text="Empezar cuestionario" Style="{StaticResource BotonPrincipal}" Clicked="EmpezarCuestionarioClicked" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

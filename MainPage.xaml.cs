@@ -1,4 +1,4 @@
-﻿namespace ExamenForge
+﻿namespace ExamForge
 {
     public partial class MainPage : ContentPage
     {

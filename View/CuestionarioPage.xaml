@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="ExamForge.Views.CuestionarioPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Cuestionario" BackgroundColor="White">
+    <Grid Padding="20">
+        <!-- Pregunta en curso -->
+        <VerticalStackLayout x:Name="PreguntaLayout" Spacing="12">
+            <Label x:Name="ProgresoLabel" TextColor="{StaticResource AzulOscuro}" />
+            <Label x:Name="EnunciadoLabel" Style="{StaticResource Titulo}" FontSize="20" />
+
+            <Button x:Name="OpcionAButton" Style="{StaticResource BotonSecundario}" CommandParameter="0" Clicked="OpcionClicked" />
+            <Button x:Name="OpcionBButton" Style="{StaticResource BotonSecundario}" CommandParameter="1" Clicked="OpcionClicked" />
+            <Button x:Name="OpcionCButton" Style="{StaticResource BotonSecundario}" CommandParameter="2" Clicked="OpcionClicked" />
+            <Button x:Name="OpcionDButton" Style="{StaticResource BotonSecundario}" CommandParameter="3" Clicked="OpcionClicked" />
+
+            <Button x:Name="AvanzarButton" Text="Siguiente" Style="{StaticResource BotonPrincipal}"
+                    Margin="0,12,0,0" Clicked="AvanzarClicked" />
+        </VerticalStackLayout>
+
+        <!-- Resultado -->
+        <VerticalStackLayout x:Name="ResultadoLayout" Spacing="14" VerticalOptions="Center" IsVisible="False">
+            <Label Text="Resultado" Style="{StaticResource Titulo}" HorizontalOptions="Center" />
+            <Label x:Name="PorcentajeLabel" FontSize="48" FontAttributes="Bold"
+                   TextColor="{StaticResource Acento}" HorizontalOptions="Center" />
+            <Label x:Name="ResumenLabel" HorizontalOptions="Center" TextColor="{StaticResource Texto}" />
+            <Button Text="Volver al inicio" Style="{StaticResource BotonPrincipal}" Clicked="VolverInicioClicked" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>
