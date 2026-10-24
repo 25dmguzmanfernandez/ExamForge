@@ -60,3 +60,4 @@ nunit-*.xml
 bin/
 obj/
 
+*.user
