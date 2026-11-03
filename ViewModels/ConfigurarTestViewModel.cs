@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ExamForge.Models;
 using ExamForge.Services;
-using ExamForge.Helpers; // Asegúrate de apuntar a donde guardaste el CuestionarioEngine
 
 namespace ExamForge.ViewModels
 {
