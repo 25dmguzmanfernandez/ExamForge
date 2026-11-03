@@ -1,128 +1,68 @@
-using System.Collections.ObjectModel;
-using ExamForge.Models;
-using ExamForge.Services;
-
 namespace ExamForge.Views;
 
 public partial class AsignaturasPage : ContentPage
 {
-    private readonly ObservableCollection<Asignatura> asignaturas = new();
-    private readonly ObservableCollection<Tema> temas = new();
-    private Asignatura? asignaturaActual;
+    // Cuando existan modelo y persistencia: private readonly GestorAsignaturas gestor;
+    // y constructor con inyección (registrar la página como AddTransient en MauiProgram).
+    private object? asignaturaActual;
 
     public AsignaturasPage()
     {
         InitializeComponent();
-        ListaAsignaturas.ItemsSource = asignaturas;
-        ListaTemas.ItemsSource = temas;
     }
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
         base.OnAppearing();
-        try
-        {
-            await DataStorage.CargarAsync();
-            RecargarAsignaturas();
-        }
-        catch (Exception ex)
-        {
-            await DisplayAlertAsync("Error", $"No se pudieron cargar las asignaturas: {ex.Message}", "Aceptar");
-        }
-    }
-
-    private void RecargarAsignaturas()
-    {
-        string? idAnterior = asignaturaActual?.Id;
-        asignaturas.Clear();
-        foreach (Asignatura asignatura in DataService.ObtenerAsignaturas())
-            asignaturas.Add(asignatura);
-
-        asignaturaActual = asignaturas.FirstOrDefault(a => a.Id == idAnterior);
-        ListaAsignaturas.SelectedItem = asignaturaActual;
-        RecargarTemas();
-    }
-
-    private void RecargarTemas()
-    {
-        temas.Clear();
-        TemasLabel.Text = asignaturaActual is null
-            ? "Temas (elige una asignatura)"
-            : $"Temas de {asignaturaActual.Nombre}";
-
-        if (asignaturaActual is null) return;
-        foreach (Tema tema in asignaturaActual.Temas)
-            temas.Add(tema);
+        // TODO: ListaAsignaturas.ItemsSource = gestor.Asignaturas;
     }
 
     private void AsignaturaSeleccionada(object sender, SelectionChangedEventArgs e)
     {
-        asignaturaActual = e.CurrentSelection.FirstOrDefault() as Asignatura;
-        RecargarTemas();
+        asignaturaActual = e.CurrentSelection.FirstOrDefault();
+
+        if (asignaturaActual == null)
+        {
+            TemasLabel.Text = "Temas";
+            ListaTemas.ItemsSource = null;
+            return;
+        }
+
+        // TODO: TemasLabel.Text = $"Temas de {asignatura.Nombre}";
+        // TODO: ListaTemas.ItemsSource = asignatura.Temas;
     }
 
     private async void AgregarAsignaturaClicked(object sender, EventArgs e)
     {
-        string nombre = NombreEntry.Text?.Trim() ?? "";
-        if (string.IsNullOrWhiteSpace(nombre))
+        string nombre = NombreEntry.Text?.Trim() ?? string.Empty;
+
+        if (string.IsNullOrEmpty(nombre))
         {
-            await DisplayAlertAsync("Aviso", "Escribe el nombre de la asignatura.", "Aceptar");
+            await DisplayAlertAsync("Aviso", "Escribe el nombre de la asignatura", "OK");
             return;
         }
 
-        try
-        {
-            await DataStorage.CargarAsync();
-            Curso curso = DataService.ObtenerOCrearCursoPrincipal();
-            Asignatura nueva = new() { Nombre = nombre };
-            curso.Asignaturas.Add(nueva);
-            try
-            {
-                await DataStorage.GuardarAsync();
-            }
-            catch
-            {
-                curso.Asignaturas.Remove(nueva);
-                throw;
-            }
-
-            asignaturas.Add(nueva);
-            ListaAsignaturas.SelectedItem = nueva;
-            NombreEntry.Text = "";
-        }
-        catch (Exception ex)
-        {
-            await DisplayAlertAsync("Error", $"No se pudo guardar la asignatura: {ex.Message}", "Aceptar");
-        }
+        // TODO: gestor.AgregarAsignatura(new Asignatura(nombre)); + guardar
+        NombreEntry.Text = "";
     }
 
     private async void AgregarTemaClicked(object sender, EventArgs e)
     {
-        if (asignaturaActual is null)
+        if (asignaturaActual == null)
         {
-            await DisplayAlertAsync("Aviso", "Selecciona primero una asignatura.", "Aceptar");
+            await DisplayAlertAsync("Aviso", "Selecciona primero una asignatura", "OK");
             return;
         }
 
-        string nombre = NombreEntry.Text?.Trim() ?? "";
-        if (string.IsNullOrWhiteSpace(nombre))
+        string nombre = NombreEntry.Text?.Trim() ?? string.Empty;
+
+        if (string.IsNullOrEmpty(nombre))
         {
-            await DisplayAlertAsync("Aviso", "Escribe el nombre del tema.", "Aceptar");
+            await DisplayAlertAsync("Aviso", "Escribe el nombre del tema", "OK");
             return;
         }
 
-        Tema nuevo = new() { Nombre = nombre };
-        asignaturaActual.Temas.Add(nuevo);
-        try
-        {
-            await DataStorage.GuardarAsync();
-            temas.Add(nuevo);
-            NombreEntry.Text = "";
-        }
-        catch (Exception ex)
-        {
-            asignaturaActual.Temas.Remove(nuevo);
-            await DisplayAlertAsync("Error", $"No se pudo guardar el tema: {ex.Message}", "Aceptar");
-        }
+        // TODO: asignatura.AddTema(new Tema(nombre)); + guardar
+        NombreEntry.Text = "";
     }
 }

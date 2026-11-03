@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              Title="Banco de preguntas" BackgroundColor="White">
     <Grid RowDefinitions="*,Auto" Padding="16" RowSpacing="10">
-        <!-- Cada tarjeta recibe un PreguntaBancoItem con enunciado y tema. -->
+        <!-- Cada elemento necesita las propiedades públicas Enunciado y Tema -->
         <CollectionView x:Name="ListaPreguntas"
                         SelectionMode="Single" SelectionChanged="PreguntaSeleccionada">
             <CollectionView.ItemTemplate>
@@ -13,10 +13,6 @@
                         <VerticalStackLayout Spacing="2">
                             <Label Text="{Binding Enunciado}" FontAttributes="Bold" TextColor="{StaticResource Texto}" />
                             <Label Text="{Binding Tema}" FontSize="12" TextColor="{StaticResource AzulOscuro}" />
-                            <Button Text="Eliminar" HorizontalOptions="End"
-                                    Style="{StaticResource BotonSecundario}"
-                                    CommandParameter="{Binding .}"
-                                    Clicked="OnEliminarPreguntaClicked" />
                         </VerticalStackLayout>
                     </Border>
                 </DataTemplate>

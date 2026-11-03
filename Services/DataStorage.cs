@@ -4,63 +4,44 @@ using ExamForge.Models;
 namespace ExamForge.Services;
 
 /// <summary>
-/// Persistencia local de los datos de ExamForge en un archivo JSON.
-/// Guardamos el usuario completo para conservar cursos, asignaturas, temas y preguntas.
+/// Únicamente se encarga de leer y escribir los datos en el archivo JSON.
+/// No conoce las páginas ni modifica las colecciones de la interfaz.
 /// </summary>
 public static class DataStorage
 {
-    private static readonly string ruta =
+    public static string RutaArchivo =>
         Path.Combine(FileSystem.Current.AppDataDirectory, "examforge_datos.json");
 
-    private static readonly SemaphoreSlim semaforo = new(1, 1);
-    private static bool cargado = false;
-
-    private static readonly JsonSerializerOptions opciones = new()
+    private static readonly JsonSerializerOptions OpcionesJson = new()
     {
         WriteIndented = true,
+        // No guardar propiedades calculadas como PorcentajeAcierto.
         IgnoreReadOnlyProperties = true
     };
 
-    public static async Task CargarAsync()
+    public static async Task<Usuario?> CargarAsync()
     {
-        await semaforo.WaitAsync();
-        try
-        {
-            if (cargado) return;
+        if (!File.Exists(RutaArchivo))
+            return null; // Primera ejecución: todavía no hay archivo.
 
-            if (File.Exists(ruta))
-            {
-                string json = await File.ReadAllTextAsync(ruta);
-                Usuario usuario = JsonSerializer.Deserialize<Usuario>(json) ?? new Usuario();
-                DataService.UsuarioActivo = usuario;
-            }
+        string json = await File.ReadAllTextAsync(RutaArchivo);
 
-            // Solo se marca como cargado tras completar la lectura.
-            // Si falla, podrá intentarse de nuevo sin sobrescribir el JSON antiguo.
-            cargado = true;
-        }
-        finally
-        {
-            semaforo.Release();
-        }
+        // Si el archivo existe pero contiene JSON inválido, lanzamos la excepción.
+        // Así nunca lo sobrescribimos silenciosamente con datos vacíos.
+        return JsonSerializer.Deserialize<Usuario>(json, OpcionesJson)
+            ?? throw new InvalidDataException("El archivo de ExamForge no contiene un usuario válido.");
     }
 
-    public static async Task GuardarAsync()
+    public static async Task GuardarAsync(Usuario usuario)
     {
-        // Impide sobrescribir los datos anteriores antes de haberlos cargado.
-        await CargarAsync();
+        ArgumentNullException.ThrowIfNull(usuario);
 
-        await semaforo.WaitAsync();
-        try
-        {
-            string json = JsonSerializer.Serialize(DataService.UsuarioActivo, opciones);
-            string temporal = ruta + ".tmp";
-            await File.WriteAllTextAsync(temporal, json);
-            File.Move(temporal, ruta, true);
-        }
-        finally
-        {
-            semaforo.Release();
-        }
+        string json = JsonSerializer.Serialize(usuario, OpcionesJson);
+
+        // Primero escribimos un archivo temporal y luego lo sustituimos.
+        // Evita dejar el JSON principal a medio escribir si falla la operación.
+        string temporal = RutaArchivo + ".tmp";
+        await File.WriteAllTextAsync(temporal, json);
+        File.Move(temporal, RutaArchivo, true);
     }
 }
