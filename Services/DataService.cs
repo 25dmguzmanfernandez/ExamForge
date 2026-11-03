@@ -37,22 +37,28 @@ namespace ExamForge.Services
         {
             try
             {
-                if (File.Exists(_filePath))
+                // 1. Si no existe el archivo en la ruta privada de escritura, lo copiamos de los recursos embebidos
+                if (!File.Exists(_filePath))
                 {
-                    string jsonString = File.ReadAllText(_filePath);
-                    _usuarios = JsonSerializer.Deserialize<List<Usuario>>(jsonString) ?? new List<Usuario>();
+                    // Abrimos el archivo JSON prefabricado de la carpeta Resources/Raw
+                    using Stream stream = FileSystem.OpenAppPackageFileAsync("data.json").Result;
+                    using StreamReader reader = new StreamReader(stream);
+                    string jsonInicial = reader.ReadToEnd();
+
+                    // Lo guardamos en la ruta de lectura/escritura del dispositivo
+                    File.WriteAllText(_filePath, jsonInicial);
                 }
-                else
-                {
-                    _usuarios = new List<Usuario>();
-                    GuardarDatos();
-                }
+
+                // 2. Leemos de forma normal el archivo (que ahora sí existirá seguro)
+                string jsonString = File.ReadAllText(_filePath);
+                _usuarios = JsonSerializer.Deserialize<List<Usuario>>(jsonString) ?? new List<Usuario>();
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error al cargar JSON: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error al inicializar la base de datos JSON: {ex.Message}");
                 _usuarios = new List<Usuario>();
             }
         }
+
     }
 }
