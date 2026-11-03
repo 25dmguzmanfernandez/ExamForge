@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using ExamForge.Services; // Asegúrate de importar el namespace de tu servicio
+using ExamForge.Services;
+using ExamForge.ViewModels;
 
 namespace ExamForge
 {
@@ -16,8 +17,10 @@ namespace ExamForge
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
-            // ViewModels Únicos o Globales
+            // 🟩 CORRECCIÓN: Todos los servicios y ViewModels se registran usando 'builder.Services'
             builder.Services.AddSingleton<DataService>();
+
+            // ViewModels Únicos o Globales
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<HomeViewModel>();
 
@@ -26,7 +29,6 @@ namespace ExamForge
             builder.Services.AddTransient<TemaViewModel>();
             builder.Services.AddTransient<ConfigurarTestViewModel>();
             builder.Services.AddTransient<CuestionarioViewModel>();
-
 
 
 #if DEBUG

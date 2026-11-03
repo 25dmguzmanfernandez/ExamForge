@@ -9,7 +9,7 @@ namespace ExamForge.Services
     public class DataService
     {
         // Ruta segura y privada para guardar datos en Android, iOS, Windows o Mac
-        private readonly string _filePath = Path.Combine(FileSystem.AppDataDirectory, "examforge_data.json");
+        private readonly string _filePath = Path.Combine(FileSystem.AppDataDirectory, "data.json");
         private List<Usuario> _usuarios = new List<Usuario>();
 
         public DataService()
