@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using ExamForge.Models;
 
 namespace ExamForge.Services
@@ -8,6 +9,43 @@ namespace ExamForge.Services
     {
         // El usuario global de la aplicación (Mochila raíz)
         public static Usuario UsuarioActivo { get; set; } = new Usuario();
+
+        // La interfaz actual no permite elegir curso: las nuevas asignaturas
+        // se crean dentro del primer curso disponible.
+        public static Curso ObtenerOCrearCursoPrincipal()
+        {
+            if (UsuarioActivo.Cursos.Count == 0)
+            {
+                UsuarioActivo.Cursos.Add(new Curso
+                {
+                    Nombre = "Mi curso",
+                    Siglas = "CURSO"
+                });
+            }
+
+            return UsuarioActivo.Cursos[0];
+        }
+
+        public static IEnumerable<Asignatura> ObtenerAsignaturas()
+        {
+            foreach (Curso curso in UsuarioActivo.Cursos)
+                foreach (Asignatura asignatura in curso.Asignaturas)
+                    yield return asignatura;
+        }
+
+        public static IEnumerable<(Asignatura Asignatura, Tema Tema)> ObtenerTemas()
+        {
+            foreach (Asignatura asignatura in ObtenerAsignaturas())
+                foreach (Tema tema in asignatura.Temas)
+                    yield return (asignatura, tema);
+        }
+
+        public static Tema? BuscarTemaDePregunta(string idPregunta)
+        {
+            return ObtenerTemas()
+                .Select(par => par.Tema)
+                .FirstOrDefault(tema => tema.BancoDePreguntas.Any(p => p.Id == idPregunta));
+        }
 
         /// <summary>
         /// Inicializa todos los datos de prueba simulando un estudiante real con historial.

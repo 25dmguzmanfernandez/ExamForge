@@ -1,3 +1,4 @@
+using ExamForge.Services;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -87,7 +88,20 @@ public partial class PortalPage : ContentPage
             }
         }
 
-        await Shell.Current.GoToAsync("//inicio");
+        // Cargamos los datos una sola vez al entrar. Así nunca se crea o guarda
+        // una pregunta antes de recuperar lo que había en el JSON.
+        try
+        {
+            await DataStorage.CargarAsync();
+            DataService.UsuarioActivo.Nombre = Preferences.Default.Get("usuario_nombre", nombre);
+            DataService.UsuarioActivo.Email = Preferences.Default.Get("usuario_correo", "");
+            await DataStorage.GuardarAsync();
+            await Shell.Current.GoToAsync("//inicio");
+        }
+        catch (Exception ex)
+        {
+            MostrarError($"No se pudieron recuperar los datos guardados: {ex.Message}");
+        }
     }
 
     //BORRAR DESPUES
