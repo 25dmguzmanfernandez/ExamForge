@@ -11,7 +11,8 @@ namespace ExamForge.ViewModels
 
         [ObservableProperty] private string email;
         [ObservableProperty] private string nombre;
-        [ObservableProperty] private bool esRegistro; // Falso = Login, Verdadero = Registro
+        [ObservableProperty] private string password;
+        [ObservableProperty] private bool esRegistro;
         [ObservableProperty] private string textoBotonPrincipal = "Iniciar Sesión";
         [ObservableProperty] private string textoBotonAlternativo = "¿No tienes cuenta? Regístrate";
 
@@ -26,12 +27,14 @@ namespace ExamForge.ViewModels
             EsRegistro = !EsRegistro;
             TextoBotonPrincipal = EsRegistro ? "Crear Cuenta" : "Iniciar Sesión";
             TextoBotonAlternativo = EsRegistro ? "¿Ya tienes cuenta? Inicia Sesión" : "¿No tienes cuenta? Regístrate";
+
+            Password = string.Empty;
         }
 
         [RelayCommand]
         private async Task ProcesarAutenticacion()
         {
-            if (string.IsNullOrWhiteSpace(Email)) return;
+            if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password)) return;
 
             var usuarios = _dataService.ObtenerUsuarios();
             Usuario usuarioLogueado = null;
@@ -40,21 +43,26 @@ namespace ExamForge.ViewModels
             {
                 if (string.IsNullOrWhiteSpace(Nombre)) return;
 
-                // Comprobamos si el correo ya existe
                 if (usuarios.Any(u => u.Email.Equals(Email, StringComparison.OrdinalIgnoreCase))) return;
 
-                usuarioLogueado = new Usuario { Nombre = Nombre, Email = Email };
+                usuarioLogueado = new Usuario
+                {
+                    Nombre = Nombre,
+                    Email = Email,
+                    Password = Password
+                };
                 usuarios.Add(usuarioLogueado);
                 _dataService.GuardarDatos();
             }
             else
             {
-                usuarioLogueado = usuarios.FirstOrDefault(u => u.Email.Equals(Email, StringComparison.OrdinalIgnoreCase));
-                if (usuarioLogueado == null) return; // Usuario no encontrado
+                usuarioLogueado = usuarios.FirstOrDefault(u =>
+                    u.Email.Equals(Email, StringComparison.OrdinalIgnoreCase) &&
+                    u.Password == Password); 
+
+                if (usuarioLogueado == null) return; 
             }
 
-            // Aquí guardamos temporalmente el ID del usuario en una sesión o pasamos el parámetro por Shell
-            // await Shell.Current.GoToAsync($"//HomePage?usuarioId={usuarioLogueado.Id}");
         }
     }
 }
