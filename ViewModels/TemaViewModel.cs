@@ -12,14 +12,11 @@ namespace ExamForge.ViewModels
         private Tema _temaActual;
 
         [ObservableProperty] private string nombreTema;
-
-        // Propiedades para el formulario de Nueva Pregunta
         [ObservableProperty] private string nuevoEnunciado;
         [ObservableProperty] private string opcion1;
         [ObservableProperty] private string opcion2;
         [ObservableProperty] private string opcion3;
         [ObservableProperty] private string opcion4;
-        [ObservableProperty] private int respuestaCorrectaIndice;
         [ObservableProperty] private string feedbackExplicacion;
 
         public ObservableCollection<Pregunta> BancoDePreguntas { get; set; } = new();
@@ -62,15 +59,14 @@ namespace ExamForge.ViewModels
             {
                 Enunciado = NuevoEnunciado,
                 Opciones = opcionesLista,
-                RespuestaCorrecta = RespuestaCorrectaIndice,
+                RespuestaCorrecta = 0,
                 FeedbackExplicacion = FeedbackExplicacion
             };
 
-            // Validamos utilizando la lógica nativa del modelo original
             if (!nuevaPregunta.EsValida()) return;
 
             _temaActual.BancoDePreguntas.Add(nuevaPregunta);
-            _dataService.GuardarDatos(); // Guardado automático en el JSON local del dispositivo
+            _dataService.GuardarDatos();
 
             RefrescarBanco();
             LimpiarFormulario();
@@ -84,7 +80,6 @@ namespace ExamForge.ViewModels
             Opcion3 = string.Empty;
             Opcion4 = string.Empty;
             FeedbackExplicacion = string.Empty;
-            RespuestaCorrectaIndice = 0;
         }
     }
 }
