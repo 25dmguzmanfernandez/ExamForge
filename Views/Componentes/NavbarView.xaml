@@ -14,19 +14,17 @@
                 Style="{StaticResource BotonIcono}" Clicked="OnAtras" />
 
         <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center" Margin="4,0">
-            <Border BackgroundColor="{StaticResource Acento}" StrokeThickness="0" StrokeShape="RoundRectangle 8"
-                    WidthRequest="34" HeightRequest="34" Padding="0">
-                <Label Text="EF" FontAttributes="Bold" TextColor="{StaticResource AzulOscuro}"
-                       HorizontalOptions="Center" VerticalOptions="Center" />
-            </Border>
+            <Image Source="logo.png" WidthRequest="34" HeightRequest="34" Aspect="AspectFit" />
             <Label Text="ExamForge" TextColor="White" FontSize="20" FontAttributes="Bold" VerticalOptions="Center" />
         </HorizontalStackLayout>
 
-        <Button x:Name="PerfilButton" Grid.Column="2" Text="👤" TextColor="White" IsVisible="False"
-                Style="{StaticResource BotonIcono}" Clicked="OnPerfil" />
+        <ImageButton x:Name="PerfilButton" Grid.Column="2" Source="user.png" IsVisible="False"
+                     WidthRequest="40" HeightRequest="40" Padding="8" BackgroundColor="Transparent"
+                     Aspect="AspectFit" Clicked="OnPerfil" />
 
         <Button x:Name="SalirButton" Grid.Column="3" Text="Salir" IsVisible="False"
-                Style="{StaticResource BotonPequenoAcento}" Padding="9,3" HeightRequest="34"
-                MinimumWidthRequest="0" HorizontalOptions="End" Clicked="OnSalir" />
+                Style="{StaticResource BotonPequenoAcento}" Padding="6,0" HeightRequest="26"
+                MinimumWidthRequest="0" MinimumHeightRequest="0" FontSize="13"
+                HorizontalOptions="End" VerticalOptions="Center" Clicked="OnSalir" />
     </Grid>
 </ContentView>

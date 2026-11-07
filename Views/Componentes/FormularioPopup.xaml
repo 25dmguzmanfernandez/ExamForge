@@ -17,7 +17,7 @@
         <Border Style="{StaticResource Tarjeta}" BackgroundColor="White" VerticalOptions="Center" Padding="18">
             <VerticalStackLayout Spacing="10">
                 <Label x:Name="EncabezadoLabel" Style="{StaticResource Titulo}" FontSize="20" />
-                <Entry x:Name="TituloEntry" Placeholder="Título" MaxLength="60" />
+                <Entry x:Name="TituloEntry" Placeholder="Título" MaxLength="42" />
                 <Editor x:Name="DescripcionEditor" Placeholder="Descripción" HeightRequest="90" MaxLength="200" />
                 <Label x:Name="ErrorLabel" TextColor="{StaticResource Error}" IsVisible="False" />
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
