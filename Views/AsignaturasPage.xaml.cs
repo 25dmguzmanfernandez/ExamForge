@@ -1,10 +1,7 @@
 /*
- * AsignaturasPage.xaml.cs: ventana 3 (asignaturas de un curso). Recibe "curso" por QueryProperty.
- * Recargar: reconstruye las cards conservando las que estaban desplegadas.
- * Crear/editar/eliminar asignaturas y selección múltiple: igual que en InicioPage.
- * AnadirTemaClicked / TemaConfirmado: crea un tema dentro de la asignatura de la card.
- * TemaClicked: abre la ventana Tema (BancoPreguntasPage). CuestionarioClicked: abre ConfigurarCuestionarioPage con esa asignatura.
- * TODO controlador: las llamadas a Provisional.* (asignaturas y temas) se sustituyen por el controlador.
+ * AsignaturasPage: recibe cursoId y muestra las asignaturas de ese curso.
+ * La página conserva el estado visual de las tarjetas; AsignaturasViewModel
+ * carga y modifica los datos.
  */
 using System.Collections.ObjectModel;
 using ExamForge.Models;
@@ -128,8 +125,7 @@ public partial class AsignaturasPage : ContentPage
 
         await Shell.Current.GoToAsync(nameof(BancoPreguntasPage), new Dictionary<string, object>
         {
-            { "asignatura", tema.Asignatura },
-            { "tema", tema.Modelo }
+            { "temaId", tema.Modelo.Id }
         });
     }
 
