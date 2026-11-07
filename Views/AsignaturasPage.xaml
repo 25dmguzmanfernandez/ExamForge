@@ -41,7 +41,7 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Border Style="{StaticResource Tarjeta}" Margin="0,6">
-                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="6">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="6">
                                 <Grid ColumnDefinitions="Auto,40,Auto" ColumnSpacing="0">
                                     <CheckBox Opacity="1" IsEnabled="True" CheckedChanged="SeleccionCambiada"
                                         IsChecked="{Binding Seleccionado, Mode=TwoWay}" Color="{StaticResource AzulOscuro}"
@@ -67,6 +67,8 @@
                                             <BindableLayout.ItemTemplate>
                                                 <DataTemplate>
                                                     <Button Text="{Binding Texto}" Style="{StaticResource BotonPestana}"
+                                                        BackgroundColor="#B0C4DE" TextColor="{StaticResource Texto}"
+                                                        Padding="8,4" CornerRadius="8" Margin="0,2"
                                                         HorizontalOptions="Start" LineBreakMode="WordWrap"
                                                         Clicked="TemaClicked" />
                                                 </DataTemplate>
@@ -77,10 +79,13 @@
                                         <Button Text="+ Añadir tema" Style="{StaticResource BotonPequeno}"
                                             HorizontalOptions="Start" Clicked="AnadirTemaClicked" />
                                     </VerticalStackLayout>
-                                    <Button Text="Realizar cuestionario" Style="{StaticResource BotonPequenoAcento}"
-                                        HorizontalOptions="Start" Clicked="CuestionarioClicked" />
                                 </VerticalStackLayout>
-                                <VerticalStackLayout Grid.Column="1" Grid.RowSpan="3" Spacing="2"
+
+                                <Button Grid.Row="3" Grid.ColumnSpan="2" Text="Realizar cuestionario"
+                                    Style="{StaticResource BotonPequenoAcento}" HorizontalOptions="Center"
+                                    Clicked="CuestionarioClicked" />
+
+                                <VerticalStackLayout Grid.Column="1" Grid.RowSpan="4" Spacing="2"
                                     HorizontalOptions="Center" VerticalOptions="Start">
                                     <GraphicsView Drawable="{Binding Queso}" WidthRequest="84" HeightRequest="84" />
                                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">

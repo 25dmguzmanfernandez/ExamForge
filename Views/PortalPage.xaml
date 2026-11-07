@@ -71,8 +71,9 @@
                     Style="{StaticResource BotonPrincipal}"
                     Text="Continuar"
                     Command="{Binding ProcesarAutenticacionCommand}" />
-                <Button x:Name="VolverButton" Text="Volver" Style="{StaticResource BotonPestana}" HorizontalOptions="Center"
-                    IsVisible="False" Command="{Binding VolverCommand}" />
+                <Button x:Name="VolverButton" Text="Volver" Style="{StaticResource BotonPestana}"
+                    BackgroundColor="{StaticResource AzulClaro}" TextColor="{StaticResource AzulOscuro}"
+                    HorizontalOptions="Center" IsVisible="False" Command="{Binding VolverCommand}" />
             </VerticalStackLayout>
         </ScrollView>
 

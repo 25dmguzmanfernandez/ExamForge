@@ -32,8 +32,9 @@ public partial class PortalPage : ContentPage
     {
         base.OnAppearing();
 
-        // Al volver al Portal, por ejemplo después de cerrar sesión,
-        // empieza mostrando las opciones iniciales.
+        // Al volver al Portal, borra las credenciales y muestra las opciones iniciales.
+        vm.Nombre = string.Empty;
+        vm.Password = string.Empty;
         vm.VolverCommand.Execute(null);
     }
 

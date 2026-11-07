@@ -14,7 +14,7 @@
     <Grid RowDefinitions="Auto,*,Auto">
         <comp:NavbarView MostrarAtras="True" MostrarSesion="True" AtrasClicked="AtrasClicked" PerfilClicked="PerfilClicked" />
 
-        <Grid Grid.Row="1" RowDefinitions="Auto,Auto,Auto,Auto,*" Padding="16,12" RowSpacing="10">
+        <Grid Grid.Row="1" RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="16,12" RowSpacing="10">
             <Border Style="{StaticResource Tarjeta}">
                 <VerticalStackLayout Spacing="4">
                     <Border BackgroundColor="{StaticResource AzulOscuro}" StrokeThickness="0"
@@ -28,10 +28,7 @@
                 </VerticalStackLayout>
             </Border>
 
-            <Button Grid.Row="1" Text="Realizar cuestionario" Style="{StaticResource BotonPequenoAcento}"
-                HorizontalOptions="Center" Clicked="CuestionarioClicked" />
-
-            <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="8">
+            <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="8">
                 <Button x:Name="PestanaBancoButton" Text="Banco de preguntas" Style="{StaticResource BotonPestana}"
                     Clicked="PestanaBancoClicked" />
                 <Button x:Name="PestanaHistorialButton" Grid.Column="1" Text="Historial de exámenes"
@@ -39,7 +36,7 @@
             </Grid>
 
             <!-- Pestaña 1: banco -->
-            <Grid x:Name="BancoCabeceraGrid" Grid.Row="3" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+            <Grid x:Name="BancoCabeceraGrid" Grid.Row="2" ColumnDefinitions="*,Auto" ColumnSpacing="8">
                 <Label x:Name="TotalPreguntasLabel" VerticalOptions="Center" TextColor="{StaticResource Texto}" />
                 <HorizontalStackLayout Grid.Column="1" Spacing="8">
                     <ImageButton x:Name="EliminarSeleccionButton" Source="delete.png" IsVisible="False"
@@ -50,7 +47,7 @@
                 </HorizontalStackLayout>
             </Grid>
 
-            <CollectionView x:Name="ListaPreguntas" Grid.Row="4" SelectionMode="None">
+            <CollectionView x:Name="ListaPreguntas" Grid.Row="3" SelectionMode="None">
                 <CollectionView.EmptyView>
                     <Label Text="Aún no se han creado preguntas…" HorizontalTextAlignment="Center" VerticalOptions="Center"
                         TextColor="{StaticResource Texto}" />
@@ -90,7 +87,7 @@
             </CollectionView>
 
             <!-- Pestaña 2: historial (solo lectura) -->
-            <CollectionView x:Name="ListaExamenes" Grid.Row="3" Grid.RowSpan="2" SelectionMode="None" IsVisible="False">
+            <CollectionView x:Name="ListaExamenes" Grid.Row="3" SelectionMode="None" IsVisible="False">
                 <CollectionView.EmptyView>
                     <Label Text="Aún no se han realizado exámenes…" HorizontalTextAlignment="Center" VerticalOptions="Center"
                         TextColor="{StaticResource Texto}" />
@@ -113,6 +110,9 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
+            <Button Grid.Row="4" Text="Realizar cuestionario" Style="{StaticResource BotonPequenoAcento}"
+                HorizontalOptions="Center" Clicked="CuestionarioClicked" />
         </Grid>
 
         <comp:FooterView Grid.Row="2" />
