@@ -4,7 +4,6 @@
  * Pestañas de generación (texto / PDF): visibles pero sin servicio todavía. ElegirPdfClicked usa FilePicker (incluido en MAUI)
  *   limitado a PDF. GenerarTextoClicked / GenerarArchivoClicked: TODO Ander (Gemini); cuando devuelva la lista basta llamar a MostrarGeneradas.
  * MostrarGeneradas / AnadirGeneradasClicked: selección múltiple (todas marcadas) de las preguntas generadas antes de guardarlas.
- * TODO controlador: Provisional.AgregarPregunta / EditarPregunta se sustituyen por el controlador de preguntas.
  */
 using ExamForge.Models;
 using ExamForge.ViewModels;

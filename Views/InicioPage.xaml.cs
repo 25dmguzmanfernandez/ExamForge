@@ -3,7 +3,6 @@
  * Recargar: reconstruye la lista de CursoVista desde el usuario activo (se llama en OnAppearing y tras cada cambio).
  * AnadirClicked / EditarClicked / CursoConfirmado: popup de curso (crear o editar). EliminarClicked: borra uno con confirmación.
  * SeleccionarClicked / EliminarSeleccionClicked: modo selección múltiple. CursoTapped: abre el curso (o marca la casilla).
- * TODO controlador: las llamadas a Provisional.* (cursos) se sustituyen por el controlador de cursos.
  */
 using ExamForge.Models;
 using ExamForge.ViewModels;

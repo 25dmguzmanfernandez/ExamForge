@@ -17,6 +17,12 @@ public partial class PortalPage : ContentPage
         {
             if (e.PropertyName == nameof(LoginViewModel.Modo))
                 CambiarModo(vm.Modo);
+
+            if (e.PropertyName == nameof(LoginViewModel.MensajeError))
+                ErrorLabel.IsVisible = !string.IsNullOrWhiteSpace(vm.MensajeError);
+
+            if (e.PropertyName == nameof(LoginViewModel.MensajeInfo))
+                InfoLabel.IsVisible = !string.IsNullOrWhiteSpace(vm.MensajeInfo);
         };
 
         CambiarModo(vm.Modo);

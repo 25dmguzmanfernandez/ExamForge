@@ -1,47 +1,109 @@
 <?xml version="1.0" encoding="utf-8" ?>
+
 <ContentPage x:Class="ExamForge.Views.AsignaturasPage"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             Title="Asignaturas y temas" BackgroundColor="White">
+             xmlns:comp="clr-namespace:ExamForge.Views.Componentes"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="White">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <comp:NavbarView MostrarAtras="True" MostrarSesion="True" AtrasClicked="AtrasClicked" PerfilClicked="PerfilClicked" />
 
-    <Grid RowDefinitions="Auto,*,Auto,*,Auto" Padding="16" RowSpacing="10">
-        <Label Text="Asignaturas" Style="{StaticResource Titulo}" />
+        <Grid Grid.Row="1" RowDefinitions="Auto,Auto,*" Padding="16,12" RowSpacing="10">
+            <Border Style="{StaticResource Tarjeta}">
+                <VerticalStackLayout Spacing="4">
+                    <HorizontalStackLayout Spacing="8">
+                        <Border BackgroundColor="{StaticResource AzulOscuro}" StrokeThickness="0"
+                                StrokeShape="RoundRectangle 8" Padding="10,3">
+                            <Label x:Name="CursoSiglasLabel" TextColor="White" FontAttributes="Bold" FontSize="12" />
+                        </Border>
+                        <Label x:Name="CursoNombreLabel" FontAttributes="Bold" FontSize="18" VerticalOptions="Center"
+                               TextColor="{StaticResource Texto}" />
+                    </HorizontalStackLayout>
+                    <Label x:Name="CursoDescripcionLabel" TextColor="{StaticResource Texto}" />
+                </VerticalStackLayout>
+            </Border>
 
-        <CollectionView Grid.Row="1" x:Name="ListaAsignaturas"
-                        SelectionMode="Single" SelectionChanged="AsignaturaSeleccionada">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Border Style="{StaticResource Tarjeta}" Margin="0,4">
-                        <Label Text="{Binding Nombre}" FontSize="16" TextColor="{StaticResource Texto}" />
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-            <CollectionView.EmptyView>
-                <Label Text="Aún no hay asignaturas." HorizontalTextAlignment="Center" />
-            </CollectionView.EmptyView>
-        </CollectionView>
-
-        <Label Grid.Row="2" x:Name="TemasLabel" Text="Temas" Style="{StaticResource Titulo}" FontSize="18" />
-
-        <CollectionView Grid.Row="3" x:Name="ListaTemas" SelectionMode="None">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Border Style="{StaticResource Tarjeta}" Margin="0,4">
-                        <Label Text="{Binding Nombre}" TextColor="{StaticResource Texto}" />
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-            <CollectionView.EmptyView>
-                <Label Text="Sin temas." HorizontalTextAlignment="Center" />
-            </CollectionView.EmptyView>
-        </CollectionView>
-
-        <VerticalStackLayout Grid.Row="4" Spacing="8">
-            <Entry x:Name="NombreEntry" Placeholder="Nombre de asignatura o tema" MaxLength="40" />
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
-                <Button Text="+ Asignatura" Style="{StaticResource BotonPrincipal}" Clicked="AgregarAsignaturaClicked" />
-                <Button Grid.Column="1" Text="+ Tema" Style="{StaticResource BotonSecundario}" Clicked="AgregarTemaClicked" />
+            <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
+                <Label Text="Asignaturas" FontSize="18" FontAttributes="Bold" VerticalOptions="Center"
+                       TextColor="{StaticResource Texto}" />
+                <Button x:Name="SeleccionarButton" Grid.Column="1" Text="Seleccionar"
+                        Style="{StaticResource BotonPequeno}" Clicked="SeleccionarClicked" />
+                <Button x:Name="EliminarSeleccionButton" Grid.Column="2" Text="Eliminar" IsVisible="False"
+                        Style="{StaticResource BotonPequenoAcento}" Clicked="EliminarSeleccionClicked" />
+                <Button Grid.Column="3" Text="+" FontSize="22" WidthRequest="48"
+                        Style="{StaticResource BotonPequenoAcento}" Clicked="AnadirClicked" />
             </Grid>
-        </VerticalStackLayout>
+
+            <CollectionView x:Name="ListaAsignaturas" Grid.Row="2" SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <Label Text="No hay asignaturas creadas…" HorizontalTextAlignment="Center" VerticalOptions="Center"
+                           TextColor="{StaticResource Texto}" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource Tarjeta}" Margin="0,6">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="AsignaturaTapped" />
+                            </Border.GestureRecognizers>
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="6">
+                                <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                                    <CheckBox Opacity="{Binding OpacidadCasilla}" IsEnabled="{Binding EnSeleccion}"
+                                              IsChecked="{Binding Seleccionado}" Color="{StaticResource AzulOscuro}" />
+                                    <Border BackgroundColor="{StaticResource AzulOscuro}" StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 8" Padding="8,1">
+                                        <Label Text="{Binding Siglas}" TextColor="White" FontAttributes="Bold" FontSize="12" />
+                                    </Border>
+                                    <Label Text="{Binding Nombre}" FontAttributes="Bold" FontSize="16"
+                                           VerticalOptions="Center" TextColor="{StaticResource Texto}" />
+                                </HorizontalStackLayout>
+
+                                <VerticalStackLayout Grid.Row="1" Spacing="6">
+                                    <Button Text="{Binding TextoDesplegable, StringFormat='Temas {0}'}"
+                                            BackgroundColor="{StaticResource AzulClaro}" TextColor="{StaticResource AzulOscuro}"
+                                            FontSize="16" FontAttributes="Bold" Padding="12,6" CornerRadius="10"
+                                            HorizontalOptions="Start" Clicked="DesplegarClicked" />
+                                    <VerticalStackLayout IsVisible="{Binding Desplegado}" Spacing="4">
+                                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding Temas}" Spacing="2">
+                                            <BindableLayout.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Button Text="{Binding Texto}" Style="{StaticResource BotonPestana}"
+                                                            HorizontalOptions="Start" Clicked="TemaClicked" />
+                                                </DataTemplate>
+                                            </BindableLayout.ItemTemplate>
+                                        </VerticalStackLayout>
+                                        <Label Text="Aún no hay temas" FontAttributes="Italic"
+                                               IsVisible="{Binding SinTemas}" TextColor="{StaticResource Texto}" />
+                                        <Button Text="+ Añadir tema" Style="{StaticResource BotonPequeno}"
+                                                HorizontalOptions="Start" Clicked="AnadirTemaClicked" />
+                                    </VerticalStackLayout>
+                                    <Button Text="Realizar cuestionario" Style="{StaticResource BotonPequenoAcento}"
+                                            HorizontalOptions="Start" Clicked="CuestionarioClicked" />
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Grid.Column="1" Grid.RowSpan="2" Spacing="2" HorizontalOptions="Center">
+                                    <GraphicsView Drawable="{Binding Queso}" WidthRequest="84" HeightRequest="84" />
+                                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
+                                        <Label Text="{Binding Correctas}" TextColor="{Binding ColorCorrectas}" FontSize="12" />
+                                        <Label Text="{Binding Incorrectas}" TextColor="{Binding ColorIncorrectas}" FontSize="12" />
+                                        <Label Text="{Binding SinContestar}" TextColor="{Binding ColorSinContestar}" FontSize="12" />
+                                    </HorizontalStackLayout>
+                                    <Button Text="✏" Style="{StaticResource BotonIcono}" Clicked="EditarClicked"
+                                            IsVisible="{Binding Seleccionado}" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+
+        <comp:FooterView Grid.Row="2" />
+
+        <comp:FormularioPopup x:Name="PopupAsignatura" Grid.RowSpan="3" PlaceholderTitulo="Título de la asignatura"
+                              Confirmado="AsignaturaConfirmada" />
+        <comp:FormularioPopup x:Name="PopupTema" Grid.RowSpan="3" Encabezado="Nuevo tema" TextoConfirmar="Agregar tema"
+                              PlaceholderTitulo="Título del tema" MostrarDescripcion="False" Confirmado="TemaConfirmado" />
+        <comp:PerfilPopup x:Name="Perfil" Grid.RowSpan="3" />
     </Grid>
 </ContentPage>

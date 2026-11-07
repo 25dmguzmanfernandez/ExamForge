@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  PerfilPopup: ventana emergente con los datos del usuario (los del registro) para consultarlos y editarlos.
+  Se abre desde el icono de usuario de la NavbarView. Contraseña nueva opcional (vacía = no cambia).
+-->
+<ContentView x:Class="ExamForge.Views.Componentes.PerfilPopup"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             IsVisible="False">
+    <Grid BackgroundColor="{StaticResource Velo}" Padding="24">
+        <Grid.GestureRecognizers>
+            <TapGestureRecognizer Tapped="OnVeloTapped" />
+        </Grid.GestureRecognizers>
+
+        <Border Style="{StaticResource Tarjeta}" BackgroundColor="White" VerticalOptions="Center" Padding="18">
+            <ScrollView>
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Mis datos" Style="{StaticResource Titulo}" FontSize="20" />
+                    <Entry x:Name="NombreEntry"
+                       Text="{Binding Nombre, Mode=TwoWay}"
+                       Placeholder="Nombre de usuario"
+                       MaxLength="30" />
+
+                    <Entry x:Name="ApellidosEntry"
+                       Text="{Binding Apellidos, Mode=TwoWay}"
+                       Placeholder="Apellidos"
+                       MaxLength="40" />
+
+                    <Entry x:Name="CorreoEntry"
+                       Text="{Binding Email, Mode=TwoWay}"
+                       Placeholder="Correo electrónico"
+                       Keyboard="Email"
+                       MaxLength="60" />
+
+                    <Entry x:Name="ClaveEntry"
+                       Text="{Binding PasswordNueva, Mode=TwoWay}"
+                       Placeholder="Nueva contraseña (opcional)"
+                       IsPassword="True"
+                       MaxLength="30" />
+
+                    <Entry x:Name="ConfirmarEntry"
+                       Text="{Binding ConfirmarPassword, Mode=TwoWay}"
+                       Placeholder="Confirmar nueva contraseña"
+                       IsPassword="True"
+                       MaxLength="30" />
+
+                    <Label x:Name="ErrorLabel"
+                       Text="{Binding MensajeError}"
+                       TextColor="{StaticResource Error}"
+                       IsVisible="False" />
+                    
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                        <Button Text="Cerrar" Style="{StaticResource BotonSecundario}" Clicked="OnCerrar" />
+                        <Button Grid.Column="1" Text="Guardar" Style="{StaticResource BotonPrincipal}" Command="{Binding GuardarCommand}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Border>
+    </Grid>
+</ContentView>

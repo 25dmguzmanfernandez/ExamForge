@@ -16,29 +16,62 @@
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Padding="24" Spacing="14" VerticalOptions="Center">
                 <Label x:Name="TituloLabel" Style="{StaticResource Titulo}" HorizontalOptions="Center" />
-                <Label x:Name="InfoLabel" TextColor="{StaticResource Verde}" HorizontalTextAlignment="Center" IsVisible="False" />
+                <Label x:Name="InfoLabel"
+                   Text="{Binding MensajeInfo}"
+                   TextColor="{StaticResource Verde}"
+                   HorizontalTextAlignment="Center"
+                   IsVisible="False" />
 
                 <!-- Estado Elegir -->
                 <VerticalStackLayout x:Name="ElegirLayout" Spacing="12">
-                    <Button Text="Iniciar sesión" Style="{StaticResource BotonSecundario}" Clicked="IrLoginClicked" />
-                    <Button Text="Crear usuario" Style="{StaticResource BotonPrincipal}" Clicked="IrRegistroClicked" />
+                        <Button Text="Iniciar sesión"
+                        Style="{StaticResource BotonSecundario}"
+                        Command="{Binding IrLoginCommand}" />
+
+                        <Button Text="Crear usuario"
+                        Style="{StaticResource BotonPrincipal}"
+                        Command="{Binding IrRegistroCommand}" />
                 </VerticalStackLayout>
 
                 <!-- Estados Registro y Login -->
                 <Border x:Name="FormularioBorder" Style="{StaticResource Tarjeta}" IsVisible="False">
                     <VerticalStackLayout Spacing="8">
-                        <Entry x:Name="NombreEntry" Placeholder="Nombre de usuario" MaxLength="30" TextChanged="CampoCambiado" />
-                        <Entry x:Name="ApellidosEntry" Placeholder="Apellidos" MaxLength="40" TextChanged="CampoCambiado" />
-                        <Entry x:Name="CorreoEntry" Placeholder="Correo electrónico" Keyboard="Email" MaxLength="60" TextChanged="CampoCambiado" />
-                        <Entry x:Name="ClaveEntry" Placeholder="Contraseña" IsPassword="True" MaxLength="30" TextChanged="CampoCambiado" />
-                        <Entry x:Name="ConfirmarEntry" Placeholder="Confirmar contraseña" IsPassword="True" MaxLength="30" TextChanged="CampoCambiado" />
-                        <Label x:Name="ErrorLabel" TextColor="{StaticResource Error}" IsVisible="False" />
+                           <Entry x:Name="NombreEntry"
+                           Placeholder="Nombre de usuario"
+                           Text="{Binding Nombre}" />
+
+                            <Entry x:Name="ApellidosEntry"
+                           Placeholder="Apellidos"
+                           Text="{Binding Apellidos}" />
+
+                           <Entry x:Name="CorreoEntry"
+                           Placeholder="Correo electrónico"
+                           Keyboard="Email"
+                           Text="{Binding Email}" />
+
+                           <Entry x:Name="ClaveEntry"
+                           Placeholder="Contraseña"
+                           IsPassword="True"
+                           Text="{Binding Password}" />
+
+                           <Entry x:Name="ConfirmarEntry"
+                           Placeholder="Confirmar contraseña"
+                           IsPassword="True"
+                           Text="{Binding ConfirmarPassword}" />
+
+                            <Label x:Name="ErrorLabel"
+                           Text="{Binding MensajeError}"
+                           TextColor="{StaticResource Error}"
+                           IsVisible="False" />
                     </VerticalStackLayout>
                 </Border>
 
-                <Button x:Name="AccionButton" Style="{StaticResource BotonPrincipal}" IsVisible="False" Clicked="AccionClicked" />
+                <Button x:Name="AccionButton"
+                    Style="{StaticResource BotonPrincipal}"
+                    Text="Continuar"
+                    Command="{Binding ProcesarAutenticacionCommand}" />
                 <Button x:Name="VolverButton" Text="Volver" Style="{StaticResource BotonPestana}" HorizontalOptions="Center"
-                        IsVisible="False" Clicked="VolverClicked" />
+                        IsVisible="False" Command="{Binding VolverCommand}" />
             </VerticalStackLayout>
         </ScrollView>
 

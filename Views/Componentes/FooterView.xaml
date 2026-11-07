@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- FooterView: pie de página común con creadores, curso y asignatura. Solo texto estático. -->
+<ContentView x:Class="ExamForge.Views.Componentes.FooterView"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <VerticalStackLayout BackgroundColor="{StaticResource AzulOscuro}" Padding="12,8" Spacing="2">
+        <Label Text="Santiago Barrera · Samuel Correia · Guzmán Fernández · Ander Gago · Imanol Hermosilla"
+               TextColor="White" FontSize="11" HorizontalTextAlignment="Center" />
+        <Label Text="2º DAM · Programación multimedia y dispositivos móviles"
+               TextColor="{StaticResource AzulClaro}" FontSize="11" HorizontalTextAlignment="Center" />
+    </VerticalStackLayout>
+</ContentView>

@@ -4,7 +4,6 @@
  * Banco: Recargar, crear/editar (abre NuevaPreguntaPage), eliminar con confirmación y selección múltiple.
  * Historial: ExamenVista (puntuación N/total, verde si correctas > total/2); tocar uno abre CuestionarioPage en modo revisión.
  * CuestionarioClicked: abre ConfigurarCuestionarioPage con la asignatura y este tema fijado.
- * TODO controlador: Provisional.EliminarPreguntas y la lectura de preguntas/exámenes se sustituyen por el controlador.
  */
 using System.Collections.ObjectModel;
 using ExamForge.Models;

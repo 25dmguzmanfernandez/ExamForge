@@ -13,7 +13,12 @@ public class CursoVista : TarjetaVista
 {
     public Curso Modelo { get; }
     public QuesoDrawable Queso { get; } = new();
-    public string ResumenQueso { get; private set; } = "";
+    public int Correctas { get; }
+    public int Incorrectas { get; }
+    public int SinContestar { get; }
+    public Microsoft.Maui.Graphics.Color ColorCorrectas => Paleta.Verde;
+    public Microsoft.Maui.Graphics.Color ColorIncorrectas => Paleta.Rojo;
+    public Microsoft.Maui.Graphics.Color ColorSinContestar => Paleta.Gris;
 
     public CursoVista(Curso curso)
     {
@@ -23,8 +28,10 @@ public class CursoVista : TarjetaVista
             curso.Asignaturas.SelectMany(a => a.Temas),
             curso.Asignaturas.SelectMany(a => a.Cuestionarios));
 
+        Correctas = c.Correctas;
+        Incorrectas = c.Incorrectas;
+        SinContestar = c.SinContestar;
         Queso.Establecer(c.Total, c.SinContestar, c.Correctas, c.Incorrectas);
-        ResumenQueso = $"✔ {c.Correctas}  ✖ {c.Incorrectas}  ○ {c.SinContestar}";
     }
 
     public string Siglas => Modelo.Siglas;
@@ -38,7 +45,12 @@ public class AsignaturaVista : TarjetaVista
 {
     public Asignatura Modelo { get; }
     public QuesoDrawable Queso { get; } = new();
-    public string ResumenQueso { get; private set; } = "";
+    public int Correctas { get; }
+    public int Incorrectas { get; }
+    public int SinContestar { get; }
+    public Microsoft.Maui.Graphics.Color ColorCorrectas => Paleta.Verde;
+    public Microsoft.Maui.Graphics.Color ColorIncorrectas => Paleta.Rojo;
+    public Microsoft.Maui.Graphics.Color ColorSinContestar => Paleta.Gris;
     public List<TemaVista> Temas { get; }
 
     public AsignaturaVista(Asignatura asignatura)
@@ -48,8 +60,10 @@ public class AsignaturaVista : TarjetaVista
 
         var c = Estadisticas.Cifras(asignatura.Temas, asignatura.Cuestionarios);
 
+        Correctas = c.Correctas;
+        Incorrectas = c.Incorrectas;
+        SinContestar = c.SinContestar;
         Queso.Establecer(c.Total, c.SinContestar, c.Correctas, c.Incorrectas);
-        ResumenQueso = $"✔ {c.Correctas}  ✖ {c.Incorrectas}  ○ {c.SinContestar}";
     }
 
     public string Siglas => Modelo.Siglas;
