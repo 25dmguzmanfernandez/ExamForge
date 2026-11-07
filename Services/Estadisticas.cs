@@ -19,11 +19,14 @@ public static class Estadisticas
         {
             foreach (var pregunta in cuestionario.Preguntas)
             {
-                if (ids.Contains(pregunta.Id) &&
-                    cuestionario.RespuestasUsuario.TryGetValue(pregunta.Id, out int respuesta))
-                {
-                    ultimo[pregunta.Id] = respuesta == pregunta.RespuestaCorrecta;
-                }
+                if (!ids.Contains(pregunta.Id))
+                    continue;
+
+                bool acertada =
+                    cuestionario.RespuestasUsuario.TryGetValue(pregunta.Id, out int respuesta) &&
+                    respuesta == pregunta.RespuestaCorrecta;
+
+                ultimo[pregunta.Id] = acertada;
             }
         }
 

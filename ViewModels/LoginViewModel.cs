@@ -1,5 +1,3 @@
-using System.Security.Cryptography;
-using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ExamForge.Models;
@@ -29,14 +27,14 @@ public partial class LoginViewModel : ObservableObject
     private void IrLogin()
     {
         LimpiarMensajes();
-        modo = "Login";
+        Modo = "Login";
     }
 
     [RelayCommand]
     private void IrRegistro()
     {
         LimpiarMensajes();
-        modo = "Registro";
+        Modo = "Registro";
     }
 
     [RelayCommand]
@@ -44,7 +42,7 @@ public partial class LoginViewModel : ObservableObject
     {
         LimpiarMensajes();
         
-        modo = "Elegir";
+        Modo = "Elegir";
     }
 
     [RelayCommand]
@@ -60,7 +58,7 @@ public partial class LoginViewModel : ObservableObject
 
         if (string.IsNullOrWhiteSpace(Nombre) || string.IsNullOrEmpty(Password))
         {
-            mensajeError = "Introduce el usuario y la contraseña.";
+            MensajeError = "Introduce el usuario y la contraseña.";
             return;
         }
 
@@ -76,7 +74,7 @@ public partial class LoginViewModel : ObservableObject
         // Actualiza contraseñas antiguas en texto plano al formato hash.
         if (usuario.Password == Password)
         {
-            usuario.Password = Hash(Password);
+            usuario.Password = PasswordHasher.Crear(Password);
             _dataService.GuardarDatos();
         }
 
@@ -145,7 +143,7 @@ public partial class LoginViewModel : ObservableObject
             Nombre = nombreLimpio,
             Apellidos = apellidosLimpios,
             Email = correoLimpio,
-            Password = Hash(Password)
+            Password = PasswordHasher.Crear(Password)
         });
 
         _dataService.GuardarDatos();
@@ -159,16 +157,13 @@ public partial class LoginViewModel : ObservableObject
         Modo = "Login";
     }
 
-    private static string Hash(string texto) =>
-        Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(texto)));
-
     private static bool VerificarPassword(string introducida, string guardada)
     {
         // Permite acceder a cuentas antiguas que aún tengan contraseña en texto plano.
         if (guardada == introducida)
             return true;
 
-        return guardada == Hash(introducida);
+        return guardada == PasswordHasher.Crear(introducida);
     }
 
     private void LimpiarMensajes()

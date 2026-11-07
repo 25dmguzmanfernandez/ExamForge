@@ -21,12 +21,11 @@ public partial class HomeViewModel : ObservableObject
         _dataService = dataService;
     }
 
-    public void Inicializar(string usuarioId)
+    public void Inicializar(string? usuarioId = null)
     {
         UsuarioActual = _dataService.UsuarioActivo;
 
-        // Permite inicializar por id si todavía no se ha establecido la sesión activa.
-        if (UsuarioActual is null || UsuarioActual.Id != usuarioId)
+        if (UsuarioActual is null && !string.IsNullOrWhiteSpace(usuarioId))
         {
             UsuarioActual = _dataService.ObtenerUsuarios()
                 .FirstOrDefault(u => u.Id == usuarioId);

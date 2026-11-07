@@ -7,6 +7,8 @@
     <Color x:Key="Acento">#F59E0B</Color>
     <Color x:Key="Texto">#1B2430</Color>
     <Color x:Key="Error">#C62828</Color>
+    <Color x:Key="Verde">#2E7D32</Color>
+    <Color x:Key="Velo">#99000000</Color>
 
     <Style x:Key="Titulo" TargetType="Label">
         <Setter Property="FontSize" Value="24" />
@@ -34,5 +36,35 @@
         <Setter Property="TextColor" Value="White" />
         <Setter Property="HeightRequest" Value="52" />
         <Setter Property="CornerRadius" Value="12" />
+    </Style>
+
+    <Style x:Key="BotonPequeno" TargetType="Button">
+        <Setter Property="Padding" Value="12,5" />
+        <Setter Property="HeightRequest" Value="40" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="BackgroundColor" Value="{StaticResource AzulClaro}" />
+        <Setter Property="TextColor" Value="{StaticResource AzulOscuro}" />
+    </Style>
+
+    <Style x:Key="BotonPequenoAcento"
+       TargetType="Button"
+       BasedOn="{StaticResource BotonPequeno}">
+        <Setter Property="BackgroundColor" Value="{StaticResource Acento}" />
+    </Style>
+
+    <Style x:Key="BotonPestana"
+       TargetType="Button"
+       BasedOn="{StaticResource BotonPequeno}">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+    </Style>
+
+    <Style x:Key="BotonIcono"
+       TargetType="Button"
+       BasedOn="{StaticResource BotonPequeno}">
+        <Setter Property="WidthRequest" Value="40" />
+        <Setter Property="HeightRequest" Value="40" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
     </Style>
 </ResourceDictionary>

@@ -27,12 +27,12 @@ namespace ExamForge
             builder.Services.AddTransient<HomeViewModel>();
 
             // ViewModels de Vistas de Detalle Dinámicas
+            builder.Services.AddTransient<PerfilViewModel>();
             builder.Services.AddTransient<BancoPreguntasPage>();
             builder.Services.AddTransient<NuevaPreguntaViewModel>();
             builder.Services.AddTransient<NuevaPreguntaPage>();
             builder.Services.AddTransient<AsignaturasViewModel>();
             builder.Services.AddTransient<AsignaturasPage>();
-            builder.Services.AddTransient<AsignaturaViewModel>();
             builder.Services.AddTransient<TemaViewModel>();
             builder.Services.AddTransient<ConfigurarCuestionarioPage>();
             builder.Services.AddTransient<ConfigurarTestViewModel>();
