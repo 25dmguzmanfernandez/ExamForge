@@ -4,109 +4,144 @@ using CommunityToolkit.Mvvm.Input;
 using ExamForge.Models;
 using ExamForge.Services;
 
-namespace ExamForge.ViewModels
+namespace ExamForge.ViewModels;
+
+public partial class ConfigurarTestViewModel : ObservableObject
 {
-    public partial class ConfigurarTestViewModel : ObservableObject
+    private readonly DataService _dataService;
+
+    [ObservableProperty] private Asignatura? asignaturaActual;
+    [ObservableProperty] private string cantidadPreguntas = "10";
+    [ObservableProperty] private int disponibles;
+    [ObservableProperty] private bool puedeIniciar;
+    [ObservableProperty] private string mensajeError = "";
+    [ObservableProperty] private bool temaFijado;
+
+    public ObservableCollection<TemaSeleccionableDto> TemasParaSeleccionar { get; } = new();
+
+    public string NombreAsignatura => AsignaturaActual?.Nombre ?? "";
+
+    public ConfigurarTestViewModel(DataService dataService)
     {
-        private readonly DataService _dataService;
-        private Asignatura _asignaturaActual;
+        _dataService = dataService;
+    }
 
-        // Propiedades reactivas automáticas gracias al Toolkit
-        [ObservableProperty]
-        private string nombreAsignatura;
+    public void Inicializar(string asignaturaId, string? temaId = null)
+    {
+        AsignaturaActual = _dataService.UsuarioActivo?
+            .Cursos
+            .SelectMany(c => c.Asignaturas)
+            .FirstOrDefault(a => a.Id == asignaturaId);
 
-        [ObservableProperty]
-        private int cantidadPreguntas = 10; // Valor inicial por defecto
+        TemaFijado = !string.IsNullOrWhiteSpace(temaId);
+        TemasParaSeleccionar.Clear();
 
-        // Colección de temas adaptados para que la interfaz (XAML) pueda ponerles un Checkbox
-        public ObservableCollection<TemaSeleccionableDto> TemasParaSeleccionar { get; set; } = new();
-
-        public ConfigurarTestViewModel(DataService dataService)
+        if (AsignaturaActual is null)
         {
-            _dataService = dataService;
+            MensajeError = "No se encontró la asignatura.";
+            PuedeIniciar = false;
+            return;
         }
 
-        /// <summary>
-        /// Se invoca al entrar a la pantalla pasando el ID de la asignatura seleccionada.
-        /// </summary>
-        public void Inicializar(string asignaturaId)
+        foreach (var tema in AsignaturaActual.Temas)
         {
-            _asignaturaActual = _dataService.ObtenerUsuarios()
-                .SelectMany(u => u.Cursos)
-                .SelectMany(c => c.Asignaturas)
-                .FirstOrDefault(a => a.Id == asignaturaId);
+            if (TemaFijado && tema.Id != temaId) continue;
 
-            if (_asignaturaActual == null) return;
-
-            NombreAsignatura = _asignaturaActual.Nombre;
-            TemasParaSeleccionar.Clear();
-
-            // Mapeamos los temas originales a nuestro DTO con Checkbox
-            foreach (var tema in _asignaturaActual.Temas)
+            var fila = new TemaSeleccionableDto(tema, TemaFijado);
+            fila.PropertyChanged += (_, e) =>
             {
-                TemasParaSeleccionar.Add(new TemaSeleccionableDto
-                {
-                    TemaRef = tema,
-                    IsSelected = false
-                });
-            }
-        }
-
-        /// <summary>
-        /// Comando asociado al botón "Comenzar Examen". Genera las preguntas y crea el cuestionario.
-        /// </summary>
-        [RelayCommand]
-        private async Task IniciarCuestionario()
-        {
-            // 1. Filtrar los IDs de los temas que el usuario marcó en los Checkboxes
-            var idsTemasSeleccionados = TemasParaSeleccionar
-                .Where(t => t.IsSelected)
-                .Select(t => t.TemaRef.Id)
-                .ToList();
-
-            // Validación: Al menos se debe seleccionar un tema
-            if (!idsTemasSeleccionados.Any() || CantidadPreguntas <= 0)
-            {
-                // En MAUI puedes lanzar una alerta nativa así si lo deseas:
-                // await Shell.Current.DisplayAlert("Atención", "Debes seleccionar al menos un tema y configurar preguntas.", "OK");
-                return;
-            }
-
-            // 2. Invocar el motor de cuestionarios para obtener el bloque de preguntas equitativas/aleatorias
-            var preguntasFiltradas = CuestionarioEngine.GenerarPreguntas(
-                _asignaturaActual.Temas,
-                idsTemasSeleccionados,
-                CantidadPreguntas
-            );
-
-            // 3. Construir la entidad Cuestionario final
-            var nuevoCuestionario = new Cuestionario
-            {
-                CantidadPreguntasSolicitadas = CantidadPreguntas,
-                EsRepartoEquitativo = idsTemasSeleccionados.Count > 1, // Es equitativo automáticamente si selecciona más de 1 tema
-                TemasIdsSeleccionados = idsTemasSeleccionados,
-                Preguntas = preguntasFiltradas
+                if (e.PropertyName == nameof(TemaSeleccionableDto.IsSelected))
+                    ActualizarValidacion();
             };
 
-            // 4. Guardar en el histórico de la asignatura y persistir los cambios en el JSON del dispositivo
-            _asignaturaActual.Cuestionarios.Add(nuevoCuestionario);
-            _dataService.GuardarDatos();
-
-            // 5. Navegación hacia la pantalla del Examen (CuestionarioPage) pasando el ID del test generado
-            // Descomenta esto cuando configures tus rutas en AppShell.xaml.cs:
-            // await Shell.Current.GoToAsync($"//CuestionarioPage?cuestionarioId={nuevoCuestionario.Id}");
+            TemasParaSeleccionar.Add(fila);
         }
+
+        ActualizarValidacion();
     }
 
-    /// <summary>
-    /// Clase de soporte (DTO) que envuelve el Tema original para añadirle la propiedad reactiva 'IsSelected'
-    /// que se enlazará bidireccionalmente al Checkbox del XAML.
-    /// </summary>
-    public partial class TemaSeleccionableDto : ObservableObject
+    partial void OnCantidadPreguntasChanged(string value) => ActualizarValidacion();
+
+    public void ActualizarValidacion()
     {
-        public Tema TemaRef { get; set; }
+        var elegidos = TemasParaSeleccionar.Where(t => t.IsSelected).ToList();
+        Disponibles = elegidos.Sum(t => t.TemaRef.BancoDePreguntas.Count);
 
-        [ObservableProperty]
-        private bool isSelected;
+        bool cantidadValida =
+            int.TryParse(CantidadPreguntas, out int cantidad) &&
+            cantidad >= 1 &&
+            cantidad <= Disponibles;
+
+        PuedeIniciar = elegidos.Count > 0 && cantidadValida;
+
+        MensajeError = elegidos.Count == 0
+            ? "Selecciona al menos un tema."
+            : !int.TryParse(CantidadPreguntas, out cantidad) || cantidad < 1
+                ? "Indica una cantidad de preguntas válida."
+                : cantidad > Disponibles
+                    ? $"Solo hay {Disponibles} pregunta(s) disponibles."
+                    : "";
     }
+
+    [RelayCommand]
+    private async Task IniciarCuestionario()
+    {
+        ActualizarValidacion();
+
+        if (!PuedeIniciar ||
+            AsignaturaActual is null ||
+            !int.TryParse(CantidadPreguntas, out int cantidad))
+        {
+            return;
+        }
+
+        var temas = TemasParaSeleccionar
+            .Where(t => t.IsSelected)
+            .Select(t => t.TemaRef)
+            .ToList();
+
+        var cuestionario = new Cuestionario
+        {
+            CantidadPreguntasSolicitadas = cantidad,
+            EsRepartoEquitativo = temas.Count > 1,
+            TemasIdsSeleccionados = temas.Select(t => t.Id).ToList(),
+            Preguntas = CuestionarioEngine.GenerarPreguntas(
+                AsignaturaActual.Temas,
+                temas.Select(t => t.Id).ToList(),
+                cantidad)
+        };
+
+        if (cuestionario.Preguntas.Count != cantidad)
+        {
+            MensajeError = "No se pudieron seleccionar todas las preguntas solicitadas.";
+            return;
+        }
+
+        // Se conserva en memoria. El intento no entra al historial hasta finalizar.
+        _dataService.AsignaturaEnCurso = AsignaturaActual;
+        _dataService.CuestionarioEnCurso = cuestionario;
+
+        await Shell.Current.GoToAsync(
+            $"../{nameof(Views.CuestionarioPage)}",
+            new Dictionary<string, object>
+            {
+                ["asignatura"] = AsignaturaActual,
+                ["cuestionario"] = cuestionario
+            });
+    }
+}
+
+public partial class TemaSeleccionableDto : ObservableObject
+{
+    public Tema TemaRef { get; }
+
+    public string Texto => $"{TemaRef.Nombre} ({TemaRef.BancoDePreguntas.Count})";
+
+    public TemaSeleccionableDto(Tema tema, bool seleccionado)
+    {
+        TemaRef = tema;
+        IsSelected = seleccionado;
+    }
+
+    [ObservableProperty] private bool isSelected;
 }

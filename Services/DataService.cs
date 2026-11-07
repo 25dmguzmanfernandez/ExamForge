@@ -12,6 +12,8 @@ namespace ExamForge.Services
         private readonly string _filePath = Path.Combine(FileSystem.AppDataDirectory, "data.json");
         private List<Usuario> _usuarios = new List<Usuario>();
         public Usuario? UsuarioActivo { get; set; }
+        public Cuestionario? CuestionarioEnCurso { get; set; }
+        public Asignatura? AsignaturaEnCurso { get; set; }
 
         public DataService()
         {

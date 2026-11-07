@@ -134,10 +134,12 @@ public partial class AsignaturasPage : ContentPage
         var vista = Contexto<AsignaturaVista>(sender);
         if (vista == null) return;
 
-        await Shell.Current.GoToAsync(nameof(ConfigurarCuestionarioPage), new Dictionary<string, object>
-        {
-            { "asignatura", vista.Modelo }
-        });
+        await Shell.Current.GoToAsync(
+                nameof(ConfigurarCuestionarioPage),
+                new Dictionary<string, object>
+                {
+                    ["asignaturaId"] = vista.Modelo.Id
+                });
     }
 
     // ---------- Eliminar ----------

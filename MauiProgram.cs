@@ -34,6 +34,7 @@ namespace ExamForge
             builder.Services.AddTransient<AsignaturasPage>();
             builder.Services.AddTransient<AsignaturaViewModel>();
             builder.Services.AddTransient<TemaViewModel>();
+            builder.Services.AddTransient<ConfigurarCuestionarioPage>();
             builder.Services.AddTransient<ConfigurarTestViewModel>();
             builder.Services.AddTransient<CuestionarioViewModel>();
 

@@ -201,12 +201,14 @@ public partial class BancoPreguntasPage : ContentPage
     {
         if (vm.AsignaturaActual is null || vm.TemaActual is null) return;
 
+        if (vm.AsignaturaActual is null || vm.TemaActual is null) return;
+
         await Shell.Current.GoToAsync(
             nameof(ConfigurarCuestionarioPage),
             new Dictionary<string, object>
             {
-            { "asignatura", vm.AsignaturaActual },
-            { "tema", vm.TemaActual }
+                ["asignaturaId"] = vm.AsignaturaActual.Id,
+                ["temaId"] = vm.TemaActual.Id
             });
     }
 }
