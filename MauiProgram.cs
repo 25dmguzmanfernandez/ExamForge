@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using ExamForge.Services;
+using ExamForge.ViewModels;
 
 namespace ExamForge
 {
@@ -15,8 +17,22 @@ namespace ExamForge
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            // 🟩 CORRECCIÓN: Todos los servicios y ViewModels se registran usando 'builder.Services'
+            builder.Services.AddSingleton<DataService>();
+
+            // ViewModels Únicos o Globales
+            builder.Services.AddTransient<LoginViewModel>();
+            builder.Services.AddTransient<HomeViewModel>();
+
+            // ViewModels de Vistas de Detalle Dinámicas
+            builder.Services.AddTransient<AsignaturaViewModel>();
+            builder.Services.AddTransient<TemaViewModel>();
+            builder.Services.AddTransient<ConfigurarTestViewModel>();
+            builder.Services.AddTransient<CuestionarioViewModel>();
+
+
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();

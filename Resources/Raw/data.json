@@ -1,0 +1,37 @@
+[
+  {
+    "Id": "usuario-principal-id",
+    "Nombre": "Tu Nombre Real",
+    "Email": "correo@ejemplo.com",
+    "Cursos": [
+      {
+        "Id": "curso-software-id",
+        "Nombre": "Desarrollo de Aplicaciones",
+        "Siglas": "DAM",
+        "Asignaturas": [
+          {
+            "Id": "asignatura-poo-id",
+            "Nombre": "Programación Orientada a Objetos",
+            "Siglas": "POO",
+            "Temas": [
+              {
+                "Id": "tema-clases-id",
+                "Nombre": "Tema 1: Clases y Objetos",
+                "BancoDePreguntas": [
+                  {
+                    "Id": "p1",
+                    "Enunciado": "¿Qué operador se usa en C# para instanciar un objeto?",
+                    "Opciones": [ "new", "alloc", "create", "instanceof" ],
+                    "RespuestaCorrecta": 0,
+                    "FeedbackExplicacion": "El operador 'new' reserva memoria dinámicamente para el objeto."
+                  }
+                ]
+              }
+            ],
+            "Cuestionarios": []
+          }
+        ]
+      }
+    ]
+  }
+]

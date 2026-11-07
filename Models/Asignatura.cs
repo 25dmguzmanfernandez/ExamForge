@@ -9,6 +9,7 @@ namespace ExamForge.Models
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Nombre { get; set; } = "";
         public string Siglas { get; set; } = "";
+        public string Descripcion { get; set; } = "";
 
         public List<Tema> Temas { get; set; } = new List<Tema>();
         public List<Cuestionario> Cuestionarios { get; set; } = new List<Cuestionario>();
