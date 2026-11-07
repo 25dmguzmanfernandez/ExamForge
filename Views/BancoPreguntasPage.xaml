@@ -13,25 +13,24 @@
     <Grid RowDefinitions="Auto,*,Auto">
         <comp:NavbarView MostrarAtras="True" MostrarSesion="True" AtrasClicked="AtrasClicked" PerfilClicked="PerfilClicked" />
 
-        <Grid Grid.Row="1" RowDefinitions="Auto,Auto,Auto,*" Padding="16,12" RowSpacing="10">
+        <Grid Grid.Row="1" RowDefinitions="Auto,Auto,Auto,Auto,*" Padding="16,12" RowSpacing="10">
             <Border Style="{StaticResource Tarjeta}">
-                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                    <VerticalStackLayout Spacing="4">
-                        <HorizontalStackLayout Spacing="8">
-                            <Border BackgroundColor="{StaticResource AzulOscuro}" StrokeThickness="0"
-                                    StrokeShape="RoundRectangle 8" Padding="10,3">
-                                <Label x:Name="AsignaturaSiglasLabel" TextColor="White" FontAttributes="Bold" FontSize="12" />
-                            </Border>
-                            <Label x:Name="AsignaturaNombreLabel" VerticalOptions="Center" TextColor="{StaticResource Texto}" />
-                        </HorizontalStackLayout>
-                        <Label x:Name="TemaNombreLabel" Style="{StaticResource Titulo}" FontSize="20" />
-                    </VerticalStackLayout>
-                    <Button Grid.Column="1" Text="Realizar cuestionario" Style="{StaticResource BotonPequenoAcento}"
-                            VerticalOptions="Center" Clicked="CuestionarioClicked" />
-                </Grid>
+                <VerticalStackLayout Spacing="4">
+                    <Border BackgroundColor="{StaticResource AzulOscuro}" StrokeThickness="0"
+                            StrokeShape="RoundRectangle 8" Padding="8,1" HorizontalOptions="Start">
+                        <Label x:Name="AsignaturaSiglasLabel" TextColor="White" FontAttributes="Bold" FontSize="16" />
+                    </Border>
+                    <Label x:Name="AsignaturaNombreLabel" MaxLines="2" LineBreakMode="WordWrap"
+                           FontAttributes="Bold" TextColor="{StaticResource Texto}" />
+                    <Label x:Name="TemaNombreLabel" Style="{StaticResource Titulo}" FontSize="20"
+                           MaxLines="2" LineBreakMode="WordWrap" />
+                </VerticalStackLayout>
             </Border>
 
-            <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="8">
+            <Button Grid.Row="1" Text="Realizar cuestionario" Style="{StaticResource BotonPequenoAcento}"
+                    HorizontalOptions="Center" Clicked="CuestionarioClicked" />
+
+            <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="8">
                 <Button x:Name="PestanaBancoButton" Text="Banco de preguntas" Style="{StaticResource BotonPestana}"
                         Clicked="PestanaBancoClicked" />
                 <Button x:Name="PestanaHistorialButton" Grid.Column="1" Text="Historial de exámenes"
@@ -39,19 +38,18 @@
             </Grid>
 
             <!-- Pestaña 1: banco -->
-            <Grid x:Name="BancoCabeceraGrid" Grid.Row="2" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+            <Grid x:Name="BancoCabeceraGrid" Grid.Row="3" ColumnDefinitions="*,Auto" ColumnSpacing="8">
                 <Label x:Name="TotalPreguntasLabel" VerticalOptions="Center" TextColor="{StaticResource Texto}" />
-                <Button x:Name="SeleccionarButton" Grid.Column="1" Text="Seleccionar"
-                        Style="{StaticResource BotonPequeno}" Clicked="SeleccionarClicked" />
-                <HorizontalStackLayout Grid.Column="2" Spacing="8">
-                    <Button x:Name="EliminarSeleccionButton" Text="Eliminar" IsVisible="False"
-                            Style="{StaticResource BotonPequenoAcento}" Clicked="EliminarSeleccionClicked" />
+                <HorizontalStackLayout Grid.Column="1" Spacing="8">
+                    <ImageButton x:Name="EliminarSeleccionButton" Source="delete.png" IsVisible="False"
+                                 WidthRequest="48" HeightRequest="40"
+                                 Padding="8" Aspect="AspectFit" Clicked="EliminarSeleccionClicked" />
                     <Button Text="+" FontSize="22" WidthRequest="48"
                             Style="{StaticResource BotonPequenoAcento}" Clicked="AnadirClicked" />
                 </HorizontalStackLayout>
             </Grid>
 
-            <CollectionView x:Name="ListaPreguntas" Grid.Row="3" SelectionMode="None">
+            <CollectionView x:Name="ListaPreguntas" Grid.Row="4" SelectionMode="None">
                 <CollectionView.EmptyView>
                     <Label Text="Aún no se han creado preguntas…" HorizontalTextAlignment="Center" VerticalOptions="Center"
                            TextColor="{StaticResource Texto}" />
@@ -59,19 +57,24 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Border Style="{StaticResource Tarjeta}" Margin="0,6">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="PreguntaTapped" />
-                            </Border.GestureRecognizers>
-                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="6">
-                                <CheckBox Opacity="{Binding OpacidadCasilla}" IsEnabled="{Binding EnSeleccion}"
-                                          IsChecked="{Binding Seleccionado}" Color="{StaticResource AzulOscuro}"
-                                          VerticalOptions="Start" />
-                                <VerticalStackLayout Grid.Column="1" Spacing="6">
-                                    <Label Text="{Binding Enunciado}" FontAttributes="Bold" TextColor="{StaticResource Texto}" />
+                            <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="4">
+                                <Grid ColumnDefinitions="Auto,40" ColumnSpacing="0">
+                                    <CheckBox Opacity="1" IsEnabled="True" CheckedChanged="SeleccionCambiada"
+                                              IsChecked="{Binding Seleccionado, Mode=TwoWay}" Color="{StaticResource AzulOscuro}"
+                                              VerticalOptions="Center" />
+                                    <ImageButton Grid.Column="1" Source="edit.png" Clicked="EditarClicked" IsVisible="True"
+                                                 WidthRequest="40" HeightRequest="40" Padding="4,8,12,8"
+                                                 BackgroundColor="Transparent" Aspect="AspectFit"
+                                                 VerticalOptions="Center" />
+                                </Grid>
+                                <Label Grid.Row="1" Text="{Binding Enunciado}" FontAttributes="Bold"
+                                       TextColor="{StaticResource Texto}" />
+                                <VerticalStackLayout Grid.Row="2" Spacing="6">
                                     <Button Text="{Binding TextoDesplegable, StringFormat='Respuestas {0}'}"
                                             Style="{StaticResource BotonPestana}" HorizontalOptions="Start"
                                             Clicked="DesplegarClicked" />
-                                    <VerticalStackLayout IsVisible="{Binding Desplegado}" BindableLayout.ItemsSource="{Binding Opciones}">
+                                    <VerticalStackLayout IsVisible="{Binding Desplegado}"
+                                                         BindableLayout.ItemsSource="{Binding Opciones}">
                                         <BindableLayout.ItemTemplate>
                                             <DataTemplate>
                                                 <Label Text="{Binding Texto}" TextColor="{StaticResource Texto}" />
@@ -79,9 +82,6 @@
                                         </BindableLayout.ItemTemplate>
                                     </VerticalStackLayout>
                                 </VerticalStackLayout>
-                                <Button Grid.Column="2" Text="✏" Style="{StaticResource BotonIcono}"
-                                        Clicked="EditarClicked" IsVisible="{Binding Seleccionado}"
-                                        VerticalOptions="Start" />
                             </Grid>
                         </Border>
                     </DataTemplate>
@@ -89,7 +89,7 @@
             </CollectionView>
 
             <!-- Pestaña 2: historial (solo lectura) -->
-            <CollectionView x:Name="ListaExamenes" Grid.Row="2" Grid.RowSpan="2" SelectionMode="None" IsVisible="False">
+            <CollectionView x:Name="ListaExamenes" Grid.Row="3" Grid.RowSpan="2" SelectionMode="None" IsVisible="False">
                 <CollectionView.EmptyView>
                     <Label Text="Aún no se han realizado exámenes…" HorizontalTextAlignment="Center" VerticalOptions="Center"
                            TextColor="{StaticResource Texto}" />

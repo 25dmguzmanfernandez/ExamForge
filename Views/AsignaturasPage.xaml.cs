@@ -17,7 +17,6 @@ public partial class AsignaturasPage : ContentPage
     private readonly AsignaturasViewModel vm;
     private readonly ObservableCollection<AsignaturaVista> asignaturas = new();
 
-    private bool enSeleccion;
     private AsignaturaVista? enEdicion;
     private AsignaturaVista? destinoTema;
 
@@ -61,14 +60,26 @@ public partial class AsignaturasPage : ContentPage
         {
             asignaturas.Add(new AsignaturaVista(asignatura)
             {
-                EnSeleccion = enSeleccion,
                 Desplegado = abiertas.Contains(asignatura.Id)
             });
         }
+
+        ActualizarBotonEliminar();
     }
 
     private static T? Contexto<T>(object sender) where T : class =>
         (sender as BindableObject)?.BindingContext as T;
+
+    private void SeleccionCambiada(object sender, CheckedChangedEventArgs e)
+    {
+        if ((sender as BindableObject)?.BindingContext is AsignaturaVista vista)
+            vista.Seleccionado = e.Value;
+
+        ActualizarBotonEliminar();
+    }
+
+    private void ActualizarBotonEliminar() =>
+        EliminarSeleccionButton.IsVisible = asignaturas.Any(a => a.Seleccionado);
 
     private async void AtrasClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("..");
 
@@ -155,20 +166,7 @@ public partial class AsignaturasPage : ContentPage
         Recargar();
     }
 
-    // ---------- Selección múltiple ----------
-    private void SeleccionarClicked(object sender, EventArgs e)
-    {
-        enSeleccion = !enSeleccion;
-        SeleccionarButton.Text = enSeleccion ? "Cancelar" : "Seleccionar";
-        EliminarSeleccionButton.IsVisible = enSeleccion;
-
-        foreach (var vista in asignaturas)
-        {
-            vista.EnSeleccion = enSeleccion;
-            vista.Seleccionado = false;
-        }
-    }
-
+    // ---------- Eliminación múltiple ----------
     private async void EliminarSeleccionClicked(object sender, EventArgs e)
     {
         if (vm.CursoActual == null) return;
@@ -184,7 +182,6 @@ public partial class AsignaturasPage : ContentPage
         if (!ok) return;
 
         vm.EliminarAsignaturas(elegidas.Select(a => a.Modelo.Id));
-        SeleccionarClicked(sender, e);
         Recargar();
     }
 
@@ -195,10 +192,4 @@ public partial class AsignaturasPage : ContentPage
         if (vista != null) vista.Desplegado = !vista.Desplegado;
     }
 
-    private void AsignaturaTapped(object sender, TappedEventArgs e)
-    {
-        // Fuera del modo selección, tocar la card no hace nada (los temas se abren desde el desplegable).
-        var vista = Contexto<AsignaturaVista>(sender);
-        if (vista != null && enSeleccion) vista.Seleccionado = !vista.Seleccionado;
-    }
 }

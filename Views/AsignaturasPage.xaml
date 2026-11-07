@@ -12,26 +12,23 @@
         <Grid Grid.Row="1" RowDefinitions="Auto,Auto,*" Padding="16,12" RowSpacing="10">
             <Border Style="{StaticResource Tarjeta}">
                 <VerticalStackLayout Spacing="4">
-                    <HorizontalStackLayout Spacing="8">
-                        <Border BackgroundColor="{StaticResource AzulOscuro}" StrokeThickness="0"
-                                StrokeShape="RoundRectangle 8" Padding="10,3">
-                            <Label x:Name="CursoSiglasLabel" TextColor="White" FontAttributes="Bold" FontSize="12" />
-                        </Border>
-                        <Label x:Name="CursoNombreLabel" FontAttributes="Bold" FontSize="18" VerticalOptions="Center"
-                               TextColor="{StaticResource Texto}" />
-                    </HorizontalStackLayout>
+                    <Border BackgroundColor="{StaticResource AzulOscuro}" StrokeThickness="0"
+                            StrokeShape="RoundRectangle 8" Padding="8,1" HorizontalOptions="Start">
+                        <Label x:Name="CursoSiglasLabel" TextColor="White" FontAttributes="Bold" FontSize="16" />
+                    </Border>
+                    <Label x:Name="CursoNombreLabel" FontAttributes="Bold" FontSize="18"
+                           MaxLines="2" LineBreakMode="WordWrap" TextColor="{StaticResource Texto}" />
                     <Label x:Name="CursoDescripcionLabel" TextColor="{StaticResource Texto}" />
                 </VerticalStackLayout>
             </Border>
 
-            <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
+            <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
                 <Label Text="Asignaturas" FontSize="18" FontAttributes="Bold" VerticalOptions="Center"
                        TextColor="{StaticResource Texto}" />
-                <Button x:Name="SeleccionarButton" Grid.Column="1" Text="Seleccionar"
-                        Style="{StaticResource BotonPequeno}" Clicked="SeleccionarClicked" />
-                <Button x:Name="EliminarSeleccionButton" Grid.Column="2" Text="Eliminar" IsVisible="False"
-                        Style="{StaticResource BotonPequenoAcento}" Clicked="EliminarSeleccionClicked" />
-                <Button Grid.Column="3" Text="+" FontSize="22" WidthRequest="48"
+                <ImageButton x:Name="EliminarSeleccionButton" Grid.Column="1" Source="delete.png" IsVisible="False"
+                             WidthRequest="48" HeightRequest="40"
+                             Padding="8" Aspect="AspectFit" Clicked="EliminarSeleccionClicked" />
+                <Button Grid.Column="2" Text="+" FontSize="22" WidthRequest="48"
                         Style="{StaticResource BotonPequenoAcento}" Clicked="AnadirClicked" />
             </Grid>
 
@@ -43,22 +40,23 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Border Style="{StaticResource Tarjeta}" Margin="0,6">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="AsignaturaTapped" />
-                            </Border.GestureRecognizers>
-                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="6">
-                                <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
-                                    <CheckBox Opacity="{Binding OpacidadCasilla}" IsEnabled="{Binding EnSeleccion}"
-                                              IsChecked="{Binding Seleccionado}" Color="{StaticResource AzulOscuro}" />
-                                    <Border BackgroundColor="{StaticResource AzulOscuro}" StrokeThickness="0"
-                                            StrokeShape="RoundRectangle 8" Padding="8,1">
-                                        <Label Text="{Binding Siglas}" TextColor="White" FontAttributes="Bold" FontSize="12" />
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="6">
+                                <Grid ColumnDefinitions="Auto,40,Auto" ColumnSpacing="0">
+                                    <CheckBox Opacity="1" IsEnabled="True" CheckedChanged="SeleccionCambiada"
+                                              IsChecked="{Binding Seleccionado, Mode=TwoWay}" Color="{StaticResource AzulOscuro}"
+                                              VerticalOptions="Center" />
+                                    <ImageButton Grid.Column="1" Source="edit.png" Clicked="EditarClicked" IsVisible="True"
+                                                 WidthRequest="40" HeightRequest="40" Padding="4,8,12,8"
+                                                 BackgroundColor="Transparent" Aspect="AspectFit"
+                                                 VerticalOptions="Center" />
+                                    <Border Grid.Column="2" BackgroundColor="{StaticResource AzulOscuro}" StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 8" Padding="8,1" VerticalOptions="Center">
+                                        <Label Text="{Binding Siglas}" TextColor="White" FontAttributes="Bold" FontSize="14" />
                                     </Border>
-                                    <Label Text="{Binding Nombre}" FontAttributes="Bold" FontSize="16"
-                                           VerticalOptions="Center" TextColor="{StaticResource Texto}" />
-                                </HorizontalStackLayout>
-
-                                <VerticalStackLayout Grid.Row="1" Spacing="6">
+                                </Grid>
+                                <Label Grid.Row="1" Text="{Binding Nombre}" FontAttributes="Bold" FontSize="16"
+                                       MaxLines="2" LineBreakMode="WordWrap" TextColor="{StaticResource Texto}" />
+                                <VerticalStackLayout Grid.Row="2" Spacing="6">
                                     <Button Text="{Binding TextoDesplegable, StringFormat='Temas {0}'}"
                                             BackgroundColor="{StaticResource AzulClaro}" TextColor="{StaticResource AzulOscuro}"
                                             FontSize="16" FontAttributes="Bold" Padding="12,6" CornerRadius="10"
@@ -68,7 +66,8 @@
                                             <BindableLayout.ItemTemplate>
                                                 <DataTemplate>
                                                     <Button Text="{Binding Texto}" Style="{StaticResource BotonPestana}"
-                                                            HorizontalOptions="Start" Clicked="TemaClicked" />
+                                                            HorizontalOptions="Start" LineBreakMode="WordWrap"
+                                                            Clicked="TemaClicked" />
                                                 </DataTemplate>
                                             </BindableLayout.ItemTemplate>
                                         </VerticalStackLayout>
@@ -80,16 +79,14 @@
                                     <Button Text="Realizar cuestionario" Style="{StaticResource BotonPequenoAcento}"
                                             HorizontalOptions="Start" Clicked="CuestionarioClicked" />
                                 </VerticalStackLayout>
-
-                                <VerticalStackLayout Grid.Column="1" Grid.RowSpan="2" Spacing="2" HorizontalOptions="Center">
+                                <VerticalStackLayout Grid.Column="1" Grid.RowSpan="3" Spacing="2"
+                                                     HorizontalOptions="Center" VerticalOptions="Start">
                                     <GraphicsView Drawable="{Binding Queso}" WidthRequest="84" HeightRequest="84" />
                                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
                                         <Label Text="{Binding Correctas}" TextColor="{Binding ColorCorrectas}" FontSize="12" />
                                         <Label Text="{Binding Incorrectas}" TextColor="{Binding ColorIncorrectas}" FontSize="12" />
                                         <Label Text="{Binding SinContestar}" TextColor="{Binding ColorSinContestar}" FontSize="12" />
                                     </HorizontalStackLayout>
-                                    <Button Text="✏" Style="{StaticResource BotonIcono}" Clicked="EditarClicked"
-                                            IsVisible="{Binding Seleccionado}" />
                                 </VerticalStackLayout>
                             </Grid>
                         </Border>

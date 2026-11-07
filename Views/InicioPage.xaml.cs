@@ -2,7 +2,8 @@
  * InicioPage.xaml.cs: ventana 2 (portal de cursos).
  * Recargar: reconstruye la lista de CursoVista desde el usuario activo (se llama en OnAppearing y tras cada cambio).
  * AnadirClicked / EditarClicked / CursoConfirmado: popup de curso (crear o editar). EliminarClicked: borra uno con confirmación.
- * SeleccionarClicked / EliminarSeleccionClicked: modo selección múltiple. CursoTapped: abre el curso (o marca la casilla).
+ * Las casillas permiten selección múltiple permanente; EliminarSeleccionClicked borra los cursos marcados.
+ * CursoTapped abre el curso al tocar su título.
  */
 using ExamForge.Models;
 using ExamForge.ViewModels;
@@ -15,7 +16,6 @@ namespace ExamForge.Views;
 public partial class InicioPage : ContentPage
 {
     private readonly ObservableCollection<CursoVista> cursos = new();
-    private bool enSeleccion;
     private CursoVista? enEdicion;
 
     public InicioPage()
@@ -39,11 +39,24 @@ public partial class InicioPage : ContentPage
         cursos.Clear();
 
         foreach (Curso curso in vm.Cursos)
-            cursos.Add(new CursoVista(curso) { EnSeleccion = enSeleccion });
+            cursos.Add(new CursoVista(curso));
+
+        ActualizarBotonEliminar();
     }
 
     private static T? Contexto<T>(object sender) where T : class =>
         (sender as BindableObject)?.BindingContext as T;
+
+    private void SeleccionCambiada(object sender, CheckedChangedEventArgs e)
+    {
+        if ((sender as BindableObject)?.BindingContext is CursoVista vista)
+            vista.Seleccionado = e.Value;
+
+        ActualizarBotonEliminar();
+    }
+
+    private void ActualizarBotonEliminar() =>
+        EliminarSeleccionButton.IsVisible = cursos.Any(c => c.Seleccionado);
 
     // ---------- Perfil ----------
     private void PerfilClicked(object sender, EventArgs e) => Perfil.Abrir();
@@ -103,20 +116,7 @@ public partial class InicioPage : ContentPage
         Recargar();
     }
 
-    // ---------- Selección múltiple ----------
-    private void SeleccionarClicked(object sender, EventArgs e)
-    {
-        enSeleccion = !enSeleccion;
-        SeleccionarButton.Text = enSeleccion ? "Cancelar" : "Seleccionar";
-        EliminarSeleccionButton.IsVisible = enSeleccion;
-
-        foreach (var vista in cursos)
-        {
-            vista.EnSeleccion = enSeleccion;
-            vista.Seleccionado = false;
-        }
-    }
-
+    // ---------- Eliminación múltiple ----------
     private async void EliminarSeleccionClicked(object sender, EventArgs e)
     {
         var elegidos = cursos.Where(c => c.Seleccionado).ToList();
@@ -130,7 +130,6 @@ public partial class InicioPage : ContentPage
         if (!ok) return;
 
         vm.EliminarCursos(elegidos.Select(c => c.Modelo.Id));
-        SeleccionarClicked(sender, e);
         Recargar();
     }
 
@@ -145,12 +144,6 @@ public partial class InicioPage : ContentPage
     {
         var vista = Contexto<CursoVista>(sender);
         if (vista == null) return;
-
-        if (enSeleccion)
-        {
-            vista.Seleccionado = !vista.Seleccionado;
-            return;
-        }
 
         await Shell.Current.GoToAsync(nameof(AsignaturasPage),
     new Dictionary<string, object>

@@ -1,7 +1,7 @@
 /*
  * BancoPreguntasPage.xaml.cs: ventana 4 (Tema). Recibe "asignatura" y "tema" por QueryProperty.
  * Pestañas: MostrarPestana(banco) alterna el banco de preguntas y el historial de exámenes.
- * Banco: Recargar, crear/editar (abre NuevaPreguntaPage), eliminar con confirmación y selección múltiple.
+ * Banco: Recargar, crear/editar (abre NuevaPreguntaPage), eliminar con confirmación y checkboxes permanentes.
  * Historial: ExamenVista (puntuación N/total, verde si correctas > total/2); tocar uno abre CuestionarioPage en modo revisión.
  * CuestionarioClicked: abre ConfigurarCuestionarioPage con la asignatura y este tema fijado.
  */
@@ -21,7 +21,6 @@ public partial class BancoPreguntasPage : ContentPage
     public string TemaId { get; set; } = "";
     private readonly ObservableCollection<PreguntaVista> preguntas = new();
     private readonly ObservableCollection<ExamenVista> examenes = new();
-    private bool enSeleccion;
 
     public BancoPreguntasPage(TemaViewModel vm)
     {
@@ -57,8 +56,7 @@ public partial class BancoPreguntasPage : ContentPage
         foreach (var pregunta in vm.BancoDePreguntas)
             preguntas.Add(PreguntaVista.ParaBanco(pregunta));
 
-        foreach (var vista in preguntas)
-            vista.EnSeleccion = enSeleccion;
+        ActualizarBotonEliminar();
 
         TotalPreguntasLabel.Text = $"{preguntas.Count} pregunta(s)";
 
@@ -77,6 +75,17 @@ public partial class BancoPreguntasPage : ContentPage
 
     private static T? Contexto<T>(object sender) where T : class =>
         (sender as BindableObject)?.BindingContext as T;
+
+    private void SeleccionCambiada(object sender, CheckedChangedEventArgs e)
+    {
+        if ((sender as BindableObject)?.BindingContext is PreguntaVista vista)
+            vista.Seleccionado = e.Value;
+
+        ActualizarBotonEliminar();
+    }
+
+    private void ActualizarBotonEliminar() =>
+        EliminarSeleccionButton.IsVisible = preguntas.Any(p => p.Seleccionado);
 
     private async void AtrasClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("..");
 
@@ -138,20 +147,7 @@ public partial class BancoPreguntasPage : ContentPage
         Recargar();
     }
 
-    // ---------- Banco: selección múltiple ----------
-    private void SeleccionarClicked(object sender, EventArgs e)
-    {
-        enSeleccion = !enSeleccion;
-        SeleccionarButton.Text = enSeleccion ? "Cancelar" : "Seleccionar";
-        EliminarSeleccionButton.IsVisible = enSeleccion;
-
-        foreach (var vista in preguntas)
-        {
-            vista.EnSeleccion = enSeleccion;
-            vista.Seleccionado = false;
-        }
-    }
-
+    // ---------- Banco: eliminación múltiple ----------
     private async void EliminarSeleccionClicked(object sender, EventArgs e)
     {
         if (vm.TemaActual == null) return;
@@ -167,7 +163,6 @@ public partial class BancoPreguntasPage : ContentPage
         if (!ok) return;
 
         vm.EliminarPreguntas(elegidas.Select(p => p.Modelo.Id));
-        SeleccionarClicked(sender, e);
         Recargar();
     }
 
@@ -177,11 +172,6 @@ public partial class BancoPreguntasPage : ContentPage
         if (vista != null) vista.Desplegado = !vista.Desplegado;
     }
 
-    private void PreguntaTapped(object sender, TappedEventArgs e)
-    {
-        var vista = Contexto<PreguntaVista>(sender);
-        if (vista != null && enSeleccion) vista.Seleccionado = !vista.Seleccionado;
-    }
 
     // ---------- Historial ----------
     private async void ExamenTapped(object sender, TappedEventArgs e)
