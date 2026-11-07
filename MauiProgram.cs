@@ -18,7 +18,7 @@ namespace ExamForge
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
-            // 🟩 CORRECCIÓN: Todos los servicios y ViewModels se registran usando 'builder.Services'
+            //Todos los servicios y ViewModels se registran usando 'builder.Services'
             builder.Services.AddSingleton<DataService>();
 
             // ViewModels Únicos o Globales

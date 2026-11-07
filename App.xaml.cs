@@ -1,17 +1,19 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace ExamForge
-{
-    public partial class App : Application
-    {
-        public App()
-        {
-            InitializeComponent();
-        }
+namespace ExamForge;
 
-        protected override Window CreateWindow(IActivationState? activationState)
-        {
-            return new Window(new AppShell());
-        }
+public partial class App : Application
+{
+    private readonly IServiceProvider _services;
+
+    public App(IServiceProvider services)
+    {
+        InitializeComponent();
+        _services = services;
+    }
+
+    protected override Window CreateWindow(IActivationState? activationState)
+    {
+        return new Window(_services.GetRequiredService<AppShell>());
     }
 }
