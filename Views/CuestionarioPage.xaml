@@ -1,30 +1,67 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<!--
+  CuestionarioPage (ventana 7). Un ScrollView con todas las preguntas y RadioButton para las respuestas.
+  Modo cuestionario: botón Finalizar (confirmación) y resultado final en un panel (aciertos / total y nota sobre 10).
+  Modo revisión (desde el historial): solo lectura, respuestas marcadas en verde (correcta) y rojo (elegida incorrecta).
+  Salir sin finalizar avisa de que el intento se borra.
+-->
 <ContentPage x:Class="ExamForge.Views.CuestionarioPage"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             Title="Cuestionario" BackgroundColor="White">
-    <Grid Padding="20">
-        <!-- Pregunta en curso -->
-        <VerticalStackLayout x:Name="PreguntaLayout" Spacing="12">
-            <Label x:Name="ProgresoLabel" TextColor="{StaticResource AzulOscuro}" />
-            <Label x:Name="EnunciadoLabel" Style="{StaticResource Titulo}" FontSize="20" />
+             xmlns:comp="clr-namespace:ExamForge.Views.Componentes"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="White">
 
-            <Button x:Name="OpcionAButton" Style="{StaticResource BotonSecundario}" CommandParameter="0" Clicked="OpcionClicked" />
-            <Button x:Name="OpcionBButton" Style="{StaticResource BotonSecundario}" CommandParameter="1" Clicked="OpcionClicked" />
-            <Button x:Name="OpcionCButton" Style="{StaticResource BotonSecundario}" CommandParameter="2" Clicked="OpcionClicked" />
-            <Button x:Name="OpcionDButton" Style="{StaticResource BotonSecundario}" CommandParameter="3" Clicked="OpcionClicked" />
+    <Grid RowDefinitions="Auto,Auto,*,Auto,Auto">
+        <comp:NavbarView MostrarAtras="True" AtrasClicked="AtrasClicked" />
 
-            <Button x:Name="AvanzarButton" Text="Siguiente" Style="{StaticResource BotonPrincipal}"
-                    Margin="0,12,0,0" Clicked="AvanzarClicked" />
-        </VerticalStackLayout>
+        <Label x:Name="TituloLabel" Grid.Row="1" Style="{StaticResource Titulo}" FontSize="20" Margin="16,12,16,0" />
 
-        <!-- Resultado -->
-        <VerticalStackLayout x:Name="ResultadoLayout" Spacing="14" VerticalOptions="Center" IsVisible="False">
-            <Label Text="Resultado" Style="{StaticResource Titulo}" HorizontalOptions="Center" />
-            <Label x:Name="PorcentajeLabel" FontSize="48" FontAttributes="Bold"
-                   TextColor="{StaticResource Acento}" HorizontalOptions="Center" />
-            <Label x:Name="ResumenLabel" HorizontalOptions="Center" TextColor="{StaticResource Texto}" />
-            <Button Text="Volver al inicio" Style="{StaticResource BotonPrincipal}" Clicked="VolverInicioClicked" />
-        </VerticalStackLayout>
+        <ScrollView Grid.Row="2">
+            <VerticalStackLayout x:Name="PreguntasLayout" Padding="16" Spacing="12">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource Tarjeta}">
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="{Binding TituloNumerado}" FontAttributes="Bold" TextColor="{StaticResource Texto}" />
+                                <Label Text="{Binding Aviso}" TextColor="{StaticResource Error}" FontAttributes="Italic" />
+                                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Opciones}" Spacing="2">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate>
+                                            <RadioButton Content="{Binding Texto}" GroupName="{Binding Grupo}"
+                                                IsChecked="{Binding Seleccionada}"
+                                                BackgroundColor="{Binding Fondo}" TextColor="{Binding ColorTexto}"
+                                                InputTransparent="{Binding SoloLectura}" />
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Button x:Name="FinalizarButton" Grid.Row="3" Text="Finalizar" Style="{StaticResource BotonPrincipal}"
+            Margin="16,8" Clicked="FinalizarClicked" />
+
+        <comp:FooterView Grid.Row="4" />
+
+        <!-- Resultado final -->
+        <Grid x:Name="ResultadoOverlay" Grid.RowSpan="5" BackgroundColor="{StaticResource Velo}" Padding="24" IsVisible="False">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnVeloTapped" />
+            </Grid.GestureRecognizers>
+            <Border Style="{StaticResource Tarjeta}" BackgroundColor="White" VerticalOptions="Center" Padding="20">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Resultado" Style="{StaticResource Titulo}" HorizontalOptions="Center" />
+                    <Label x:Name="AciertosLabel" FontSize="18" HorizontalOptions="Center" TextColor="{StaticResource Texto}" />
+                    <Label x:Name="NotaLabel" FontSize="44" FontAttributes="Bold" HorizontalOptions="Center" />
+                    <Label Text="Nota sobre 10" HorizontalOptions="Center" TextColor="{StaticResource Texto}" />
+                    <Button Text="Cerrar" Style="{StaticResource BotonPrincipal}" Clicked="CerrarResultadoClicked" />
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
     </Grid>
+
 </ContentPage>

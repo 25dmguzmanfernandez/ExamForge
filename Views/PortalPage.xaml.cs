@@ -1,98 +1,65 @@
-using System.Security.Cryptography;
-using System.Text;
+using ExamForge.ViewModels;
 
 namespace ExamForge.Views;
 
 public partial class PortalPage : ContentPage
 {
-    // true = ya hay usuario creado (solo nombre y contraseña); false = primera vez (registro)
-    private bool usuarioCreado = false;
+    private readonly LoginViewModel vm;
 
-    public PortalPage()
+    public PortalPage(LoginViewModel vm)
     {
         InitializeComponent();
+
+        this.vm = vm;
+        BindingContext = vm;
+
+        vm.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(LoginViewModel.Modo))
+                CambiarModo(vm.Modo);
+
+            if (e.PropertyName == nameof(LoginViewModel.MensajeError))
+                ErrorLabel.IsVisible = !string.IsNullOrWhiteSpace(vm.MensajeError);
+
+            if (e.PropertyName == nameof(LoginViewModel.MensajeInfo))
+                InfoLabel.IsVisible = !string.IsNullOrWhiteSpace(vm.MensajeInfo);
+        };
+
+        CambiarModo(vm.Modo);
     }
 
     protected override void OnAppearing()
     {
         base.OnAppearing();
 
-        NombreEntry.Text = "";
-        ApellidoEntry.Text = "";
-        CorreoEntry.Text = "";
-        ClaveEntry.Text = "";
-        ErrorLabel.IsVisible = false;
-
-        //BORRAR DESPUES
-        usuarioCreado = Preferences.Default.ContainsKey("usuario_nombre");
-
-        ApellidoEntry.IsVisible = !usuarioCreado;
-        CorreoEntry.IsVisible = !usuarioCreado;
-        TituloLabel.Text = usuarioCreado ? "Introduce tus credenciales" : "Crea tu usuario para empezar";
-        AccederButton.Text = usuarioCreado ? "Entrar" : "Crear usuario";
+        // Al volver al Portal, borra las credenciales y muestra las opciones iniciales.
+        vm.Nombre = string.Empty;
+        vm.Password = string.Empty;
+        vm.VolverCommand.Execute(null);
     }
 
-    private void MostrarError(string mensaje)
+    private void CambiarModo(string nuevoModo)
     {
-        ErrorLabel.Text = mensaje;
-        ErrorLabel.IsVisible = true;
-    }
+        bool elegir = nuevoModo == "Elegir";
+        bool registro = nuevoModo == "Registro";
 
-    private async void AccederClicked(object sender, EventArgs e)
-    {
-        ErrorLabel.IsVisible = false;
+        ElegirLayout.IsVisible = elegir;
+        FormularioBorder.IsVisible = !elegir;
 
-        string nombre = NombreEntry.Text?.Trim() ?? string.Empty;
-        string clave = ClaveEntry.Text ?? string.Empty;
+        NombreEntry.IsVisible = !elegir;
+        ApellidosEntry.IsVisible = registro;
+        CorreoEntry.IsVisible = registro;
+        ConfirmarEntry.IsVisible = registro;
 
-        if (string.IsNullOrEmpty(nombre) || string.IsNullOrEmpty(clave))
+        VolverButton.IsVisible = !elegir;
+        AccionButton.IsVisible = !elegir;
+        AccionButton.Text = registro ? "Crear usuario" : "Entrar";
+
+        TituloLabel.Text = nuevoModo switch
         {
-            MostrarError("Introduce nombre y contraseña.");
-            return;
-        }
-
-        //BORRAR DESPUES
-        if (!usuarioCreado)
-        {
-            string apellido = ApellidoEntry.Text?.Trim() ?? string.Empty;
-            string correo = CorreoEntry.Text?.Trim() ?? string.Empty;
-
-            if (string.IsNullOrEmpty(apellido) || string.IsNullOrEmpty(correo))
-            {
-                MostrarError("Rellena todos los campos.");
-                return;
-            }
-
-            if (!correo.Contains('@') || !correo.Contains('.'))
-            {
-                MostrarError("El correo no es válido.");
-                return;
-            }
-
-            Preferences.Default.Set("usuario_nombre", nombre);
-            Preferences.Default.Set("usuario_apellido", apellido);
-            Preferences.Default.Set("usuario_correo", correo);
-            Preferences.Default.Set("usuario_clave", Hash(clave));
-        }
-        else
-        {
-            string nombreGuardado = Preferences.Default.Get("usuario_nombre", "");
-            string claveGuardada = Preferences.Default.Get("usuario_clave", "");
-
-            if (!string.Equals(nombre, nombreGuardado, StringComparison.OrdinalIgnoreCase)
-                || Hash(clave) != claveGuardada)
-            {
-                MostrarError("Usuario o contraseña incorrectos.");
-                return;
-            }
-        }
-
-        await Shell.Current.GoToAsync("//inicio");
-    }
-
-    //BORRAR DESPUES
-    private static string Hash(string texto)
-    {
-        return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(texto)));
+            "Registro" => "Crea tu usuario",
+            "Login" => "Iniciar sesión",
+            _ => "Bienvenido a ExamForge"
+        };
     }
 }

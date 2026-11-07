@@ -1,119 +1,142 @@
+using ExamForge.ViewModels;
+using ExamForge.Views.Componentes;
+using ExamForge.Views.Vistas;
+using ExamForge.Models;
+
 namespace ExamForge.Views;
 
+[QueryProperty(nameof(ExamenId), "examenId")]
 public partial class CuestionarioPage : ContentPage
 {
-    private int indiceActual = 0;
-    private int totalPreguntas = 0;
-    private int aciertos = 0;
-    private int opcionSeleccionada = -1;
-    private int respuestaCorrectaActual = -1;
+    private readonly CuestionarioViewModel vm;
+    private readonly List<PreguntaVista> preguntas = new();
+    private bool cargada;
+    private bool finalizado;
 
-    private Button[] botonesOpcion = Array.Empty<Button>();
+    public string? ExamenId { get; set; }
 
-    public CuestionarioPage()
+    public CuestionarioPage(CuestionarioViewModel vm)
     {
         InitializeComponent();
-        botonesOpcion = new[] { OpcionAButton, OpcionBButton, OpcionCButton, OpcionDButton };
+
+        this.vm = vm;
+        BindingContext = vm;
+        BindableLayout.SetItemsSource(PreguntasLayout, preguntas);
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
 
-        // TODO: obtener las preguntas del cuestionario (gestor) y llamar a:
-        //   IniciarCuestionario(lista.Count);
-        //   MostrarPregunta(p.Enunciado, p.OpcionA, p.OpcionB, p.OpcionC, p.OpcionD, p.RespuestaCorrecta);
-    }
+        if (cargada) return;
 
-    // --- Métodos que usará la lógica cuando exista el modelo ---
+        vm.Inicializar(ExamenId);
+        var cuestionario = vm.CuestionarioActual;
 
-    public void IniciarCuestionario(int total)
-    {
-        totalPreguntas = total;
-        indiceActual = 0;
-        aciertos = 0;
-        PreguntaLayout.IsVisible = true;
-        ResultadoLayout.IsVisible = false;
-    }
-
-    public void MostrarPregunta(string enunciado, string a, string b, string c, string d, int correcta)
-    {
-        opcionSeleccionada = -1;
-        respuestaCorrectaActual = correcta;
-
-        ProgresoLabel.Text = $"Pregunta {indiceActual + 1} de {totalPreguntas}";
-        EnunciadoLabel.Text = enunciado;
-
-        OpcionAButton.Text = a;
-        OpcionBButton.Text = b;
-        OpcionCButton.Text = c;
-        OpcionDButton.Text = d;
-
-        MarcarSeleccion(-1);
-
-        AvanzarButton.Text = indiceActual == totalPreguntas - 1 ? "Finalizar" : "Siguiente";
-    }
-
-    // --- Eventos ---
-
-    private void OpcionClicked(object sender, EventArgs e)
-    {
-        if (sender is not Button boton || !int.TryParse(boton.CommandParameter?.ToString(), out int indice))
-            return;
-
-        opcionSeleccionada = indice;
-        MarcarSeleccion(indice);
-    }
-
-    private void MarcarSeleccion(int indice)
-    {
-        for (int i = 0; i < botonesOpcion.Length; i++)
+        if (cuestionario is null)
         {
-            bool seleccionado = i == indice;
-            botonesOpcion[i].BackgroundColor = seleccionado
-                ? (Color)Application.Current!.Resources["Acento"]
-                : (Color)Application.Current!.Resources["AzulOscuro"];
-            botonesOpcion[i].TextColor = seleccionado
-                ? (Color)Application.Current!.Resources["AzulOscuro"]
-                : Colors.White;
-        }
-    }
-
-    private async void AvanzarClicked(object sender, EventArgs e)
-    {
-        if (opcionSeleccionada == -1)
-        {
-            await DisplayAlertAsync("Aviso", "Selecciona una respuesta", "OK");
+            await DisplayAlertAsync("Cuestionario", "No se encontró el cuestionario.", "OK");
+            await Shell.Current.GoToAsync("..");
             return;
         }
 
-        if (opcionSeleccionada == respuestaCorrectaActual)
-            aciertos++;
+        cargada = true;
 
-        indiceActual++;
-
-        if (indiceActual >= totalPreguntas)
+        for (int i = 0; i < cuestionario.Preguntas.Count; i++)
         {
-            MostrarResultado();
-            return;
+            var pregunta = cuestionario.Preguntas[i];
+
+            preguntas.Add(vm.EsRevision
+                ? PreguntaVista.ParaRevision(pregunta, cuestionario, i + 1)
+                : PreguntaVista.ParaCuestionario(pregunta, i + 1));
         }
 
-        // TODO: MostrarPregunta(...) con la pregunta número indiceActual
+        BindableLayout.SetItemsSource(PreguntasLayout, null);
+        BindableLayout.SetItemsSource(PreguntasLayout, preguntas);
+
+        FinalizarButton.IsVisible = !vm.EsRevision;
+        TituloLabel.Text = vm.EsRevision
+            ? $"Revisión · {cuestionario.FechaCreacion:dd/MM/yyyy HH:mm} · {cuestionario.Aciertos} / {cuestionario.TotalPreguntas}"
+            : $"Cuestionario · {cuestionario.TotalPreguntas} preguntas";
     }
 
-    private void MostrarResultado()
+    private void OnVeloTapped(object sender, TappedEventArgs e)
     {
-        double porcentaje = totalPreguntas == 0 ? 0 : (double)aciertos / totalPreguntas * 100;
-
-        PorcentajeLabel.Text = $"{porcentaje:0}%";
-        ResumenLabel.Text = $"Aciertos: {aciertos} de {totalPreguntas}";
-
-        PreguntaLayout.IsVisible = false;
-        ResultadoLayout.IsVisible = true;
+        // Absorbe el toque sobre el fondo del panel de resultado.
     }
 
-    private async void VolverInicioClicked(object sender, EventArgs e)
+    private async void AtrasClicked(object sender, EventArgs e) =>
+        await SalirAsync();
+
+    protected override bool OnBackButtonPressed()
     {
-        await Shell.Current.GoToAsync("//inicio");
+        _ = SalirAsync();
+        return true;
+    }
+
+    private async Task SalirAsync()
+    {
+        if (!vm.EsRevision && !finalizado)
+        {
+            bool salir = await DisplayAlertAsync(
+                "Salir del cuestionario",
+                "Si sales ahora se borrará este intento y no podrás reanudarlo.",
+                "Salir",
+                "Seguir");
+
+            if (!salir) return;
+
+            vm.CancelarIntento();
+        }
+
+        await Shell.Current.GoToAsync("..");
+    }
+
+    private async void FinalizarClicked(object sender, EventArgs e)
+    {
+        var cuestionario = vm.CuestionarioActual;
+        if (cuestionario is null || vm.EsRevision) return;
+
+        int sinResponder = preguntas.Count(
+            p => p.Opciones.All(o => !o.Seleccionada));
+
+        string mensaje = sinResponder > 0
+            ? $"Tienes {sinResponder} pregunta(s) sin responder. ¿Finalizar el cuestionario?"
+            : "¿Finalizar el cuestionario?";
+
+        bool confirmar = await DisplayAlertAsync(
+            "Finalizar", mensaje, "Finalizar", "Seguir");
+
+        if (!confirmar) return;
+
+        var respuestas = new Dictionary<string, int>();
+
+        foreach (var pregunta in preguntas)
+        {
+            int marcada = pregunta.Opciones.FindIndex(o => o.Seleccionada);
+            if (marcada >= 0)
+                respuestas[pregunta.Modelo.Id] = marcada;
+        }
+
+        double nota = vm.Finalizar(respuestas);
+        finalizado = true;
+        MostrarResultado(cuestionario, nota);
+    }
+
+    private void MostrarResultado(Cuestionario cuestionario, double nota)
+    {
+        bool aprobado = cuestionario.Aciertos > cuestionario.TotalPreguntas / 2.0;
+
+        AciertosLabel.Text =
+            $"Correctas: {cuestionario.Aciertos} / {cuestionario.TotalPreguntas}";
+        NotaLabel.Text = nota.ToString("0.0");
+        NotaLabel.TextColor = aprobado ? Paleta.Verde : Paleta.Rojo;
+        ResultadoOverlay.IsVisible = true;
+    }
+
+    private async void CerrarResultadoClicked(object sender, EventArgs e)
+    {
+        ResultadoOverlay.IsVisible = false;
+        await Shell.Current.GoToAsync("..");
     }
 }

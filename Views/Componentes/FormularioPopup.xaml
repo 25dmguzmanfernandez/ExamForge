@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  FormularioPopup: ventana emergente (panel sobre la página) con título y, opcionalmente, descripción.
+  Se usa para crear/editar cursos, asignaturas y temas. Se coloca como último hijo de la Grid raíz de la página
+  con Grid.RowSpan para cubrirla. Se cierra con Cancelar o al confirmar.
+-->
+<ContentView x:Class="ExamForge.Views.Componentes.FormularioPopup"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             IsVisible="False">
+    
+    <Grid BackgroundColor="{StaticResource Velo}" Padding="24">
+        <Grid.GestureRecognizers>
+            
+            <TapGestureRecognizer Tapped="OnVeloTapped" />
+            
+        </Grid.GestureRecognizers>
+
+        <Border Style="{StaticResource Tarjeta}" BackgroundColor="White" VerticalOptions="Center" Padding="18">
+            
+            <VerticalStackLayout Spacing="10">
+                
+                <Label x:Name="EncabezadoLabel" Style="{StaticResource Titulo}" FontSize="20" />
+                <Entry x:Name="TituloEntry" Placeholder="Título" MaxLength="42" />
+                <Editor x:Name="DescripcionEditor" Placeholder="Descripción" HeightRequest="90" MaxLength="200" />
+                <Label x:Name="ErrorLabel" TextColor="{StaticResource Error}" IsVisible="False" />
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                    
+                    <Button Text="Cancelar" Style="{StaticResource BotonSecundario}" Clicked="OnCancelar" />
+                    <Button x:Name="ConfirmarButton" Grid.Column="1" Text="Guardar"
+                            Style="{StaticResource BotonPrincipal}" Clicked="OnConfirmar" />
+                    
+                </Grid>
+            </VerticalStackLayout>
+            
+        </Border>
+    </Grid>
+</ContentView>

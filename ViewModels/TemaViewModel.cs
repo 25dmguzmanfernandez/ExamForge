@@ -1,85 +1,71 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using ExamForge.Models;
 using ExamForge.Services;
 
-namespace ExamForge.ViewModels
+namespace ExamForge.ViewModels;
+
+public partial class TemaViewModel : ObservableObject
 {
-    public partial class TemaViewModel : ObservableObject
+    private readonly DataService _dataService;
+    private Tema? _temaActual;
+
+    [ObservableProperty] private string nombreTema = "";
+
+    public ObservableCollection<Pregunta> BancoDePreguntas { get; } = new();
+    public ObservableCollection<Cuestionario> Cuestionarios { get; } = new();
+
+    public Asignatura? AsignaturaActual { get; private set; }
+    public Tema? TemaActual => _temaActual;
+
+    public TemaViewModel(DataService dataService)
     {
-        private readonly DataService _dataService;
-        private Tema _temaActual;
+        _dataService = dataService;
+    }
 
-        [ObservableProperty] private string nombreTema;
-        [ObservableProperty] private string nuevoEnunciado;
-        [ObservableProperty] private string opcion1;
-        [ObservableProperty] private string opcion2;
-        [ObservableProperty] private string opcion3;
-        [ObservableProperty] private string opcion4;
-        [ObservableProperty] private string feedbackExplicacion;
+    public void Inicializar(string temaId)
+    {
+        AsignaturaActual = _dataService.UsuarioActivo?
+            .Cursos
+            .SelectMany(c => c.Asignaturas)
+            .FirstOrDefault(a => a.Temas.Any(t => t.Id == temaId));
 
-        public ObservableCollection<Pregunta> BancoDePreguntas { get; set; } = new();
+        _temaActual = AsignaturaActual?.Temas.FirstOrDefault(t => t.Id == temaId);
 
-        public TemaViewModel(DataService dataService)
+        BancoDePreguntas.Clear();
+        Cuestionarios.Clear();
+
+        if (_temaActual is null || AsignaturaActual is null)
         {
-            _dataService = dataService;
+            NombreTema = "";
+            return;
         }
 
-        public void Inicializar(string temaId)
+        NombreTema = _temaActual.Nombre;
+
+        foreach (var pregunta in _temaActual.BancoDePreguntas)
+            BancoDePreguntas.Add(pregunta);
+
+        var idsPreguntas = _temaActual.BancoDePreguntas
+            .Select(p => p.Id)
+            .ToHashSet();
+
+        foreach (var cuestionario in AsignaturaActual.Cuestionarios
+                     .Where(c => c.Preguntas.Any(p => idsPreguntas.Contains(p.Id)))
+                     .OrderByDescending(c => c.FechaCreacion))
         {
-            _temaActual = _dataService.ObtenerUsuarios()
-                .SelectMany(u => u.Cursos)
-                .SelectMany(c => c.Asignaturas)
-                .SelectMany(a => a.Temas)
-                .FirstOrDefault(t => t.Id == temaId);
-
-            if (_temaActual == null) return;
-
-            NombreTema = _temaActual.Nombre;
-            RefrescarBanco();
+            Cuestionarios.Add(cuestionario);
         }
+    }
 
-        private void RefrescarBanco()
-        {
-            BancoDePreguntas.Clear();
-            foreach (var pregunta in _temaActual.BancoDePreguntas)
-            {
-                BancoDePreguntas.Add(pregunta);
-            }
-        }
+    public void EliminarPreguntas(IEnumerable<string> ids)
+    {
+        if (_temaActual is null) return;
 
-        [RelayCommand]
-        private void AgregarNuevaPregunta()
-        {
-            var opcionesLista = new List<string> { Opcion1, Opcion2, Opcion3, Opcion4 }
-                .Where(o => !string.IsNullOrWhiteSpace(o)).ToList();
+        var idsEliminar = ids.ToHashSet();
+        _temaActual.BancoDePreguntas.RemoveAll(p => idsEliminar.Contains(p.Id));
 
-            var nuevaPregunta = new Pregunta
-            {
-                Enunciado = NuevoEnunciado,
-                Opciones = opcionesLista,
-                RespuestaCorrecta = 0,
-                FeedbackExplicacion = FeedbackExplicacion
-            };
-
-            if (!nuevaPregunta.EsValida()) return;
-
-            _temaActual.BancoDePreguntas.Add(nuevaPregunta);
-            _dataService.GuardarDatos();
-
-            RefrescarBanco();
-            LimpiarFormulario();
-        }
-
-        private void LimpiarFormulario()
-        {
-            NuevoEnunciado = string.Empty;
-            Opcion1 = string.Empty;
-            Opcion2 = string.Empty;
-            Opcion3 = string.Empty;
-            Opcion4 = string.Empty;
-            FeedbackExplicacion = string.Empty;
-        }
+        _dataService.GuardarDatos();
+        Inicializar(_temaActual.Id);
     }
 }
