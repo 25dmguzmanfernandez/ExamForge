@@ -7,6 +7,7 @@
 <ContentView x:Class="ExamForge.Views.Componentes.NavbarView"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    
     <Grid BackgroundColor="{StaticResource AzulOscuro}" Padding="8,8" ColumnSpacing="6"
           ColumnDefinitions="Auto,*,Auto,Auto">
 
@@ -14,8 +15,10 @@
                 Style="{StaticResource BotonIcono}" Clicked="OnAtras" />
 
         <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center" Margin="4,0">
+            
             <Image Source="logo.png" WidthRequest="34" HeightRequest="34" Aspect="AspectFit" />
             <Label Text="ExamForge" TextColor="White" FontSize="20" FontAttributes="Bold" VerticalOptions="Center" />
+            
         </HorizontalStackLayout>
 
         <ImageButton x:Name="PerfilButton" Grid.Column="2" Source="user.png" IsVisible="False"
@@ -27,4 +30,5 @@
                 MinimumWidthRequest="0" MinimumHeightRequest="0" FontSize="13"
                 HorizontalOptions="End" VerticalOptions="Center" Clicked="OnSalir" />
     </Grid>
+    
 </ContentView>

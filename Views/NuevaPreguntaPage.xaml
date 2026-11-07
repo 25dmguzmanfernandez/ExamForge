@@ -11,6 +11,7 @@
              xmlns:comp="clr-namespace:ExamForge.Views.Componentes"
              Shell.NavBarIsVisible="False"
              BackgroundColor="White">
+
     <Grid RowDefinitions="Auto,*,Auto">
         <comp:NavbarView MostrarAtras="True" AtrasClicked="AtrasClicked" />
 
@@ -36,37 +37,37 @@
                             AutoSize="TextChanges"
                             MinimumHeightRequest="80" />
 
-                           <Label Text="Respuestas (la primera es la correcta)"
-                           FontAttributes="Bold"
-                           TextColor="{StaticResource Texto}" />
+                        <Label Text="Respuestas (la primera es la correcta)"
+                            FontAttributes="Bold"
+                            TextColor="{StaticResource Texto}" />
 
-                           <Entry x:Name="Opcion1Entry"
-                           Text="{Binding Opcion1, Mode=TwoWay}"
-                           Placeholder="✔ Respuesta correcta" />
+                        <Entry x:Name="Opcion1Entry"
+                            Text="{Binding Opcion1, Mode=TwoWay}"
+                            Placeholder="✔ Respuesta correcta" />
 
-                           <Entry x:Name="Opcion2Entry"
-                           Text="{Binding Opcion2, Mode=TwoWay}"
-                           Placeholder="Respuesta 2" />
+                        <Entry x:Name="Opcion2Entry"
+                            Text="{Binding Opcion2, Mode=TwoWay}"
+                            Placeholder="Respuesta 2" />
 
-                           <Entry x:Name="Opcion3Entry"
-                           Text="{Binding Opcion3, Mode=TwoWay}"
-                           Placeholder="Respuesta 3"
-                           IsVisible="False" />
+                        <Entry x:Name="Opcion3Entry"
+                            Text="{Binding Opcion3, Mode=TwoWay}"
+                            Placeholder="Respuesta 3"
+                            IsVisible="False" />
 
-                           <Entry x:Name="Opcion4Entry"
-                           Text="{Binding Opcion4, Mode=TwoWay}"
-                           Placeholder="Respuesta 4"
-                           IsVisible="False" />
+                        <Entry x:Name="Opcion4Entry"
+                            Text="{Binding Opcion4, Mode=TwoWay}"
+                            Placeholder="Respuesta 4"
+                            IsVisible="False" />
 
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
                             <Button x:Name="MasOpcionButton" Text="+ Añadir respuesta" Style="{StaticResource BotonPequeno}" Clicked="MasOpcionClicked" />
                             <Button x:Name="MenosOpcionButton" Grid.Column="1" Text="Quitar última" IsVisible="False"
-                                    Style="{StaticResource BotonPequeno}" Clicked="MenosOpcionClicked" />
+                                Style="{StaticResource BotonPequeno}" Clicked="MenosOpcionClicked" />
                         </Grid>
                         <Label x:Name="ErrorLabel"
-                           Text="{Binding MensajeError}"
-                           TextColor="{StaticResource Error}"
-                           IsVisible="False" />
+                            Text="{Binding MensajeError}"
+                            TextColor="{StaticResource Error}"
+                            IsVisible="False" />
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="8" Margin="0,6,0,0">
                             <Button Text="Cancelar" Style="{StaticResource BotonSecundario}" Clicked="AtrasClicked" />
                             <Button Grid.Column="1" Text="Guardar" Style="{StaticResource BotonPrincipal}" Command="{Binding GuardarCommand}" />
@@ -136,4 +137,5 @@
             </Border>
         </Grid>
     </Grid>
+
 </ContentPage>

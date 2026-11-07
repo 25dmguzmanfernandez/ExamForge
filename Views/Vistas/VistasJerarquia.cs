@@ -6,6 +6,7 @@
 using ExamForge.Models;
 using ExamForge.Services;
 using ExamForge.Views.Componentes;
+using Microsoft.Maui.Graphics;
 
 namespace ExamForge.Views.Vistas;
 
@@ -16,9 +17,9 @@ public class CursoVista : TarjetaVista
     public int Correctas { get; }
     public int Incorrectas { get; }
     public int SinContestar { get; }
-    public Microsoft.Maui.Graphics.Color ColorCorrectas => Paleta.Verde;
-    public Microsoft.Maui.Graphics.Color ColorIncorrectas => Paleta.Rojo;
-    public Microsoft.Maui.Graphics.Color ColorSinContestar => Paleta.Gris;
+    public Color ColorCorrectas => Paleta.Verde;
+    public Color ColorIncorrectas => Paleta.Rojo;
+    public Color ColorSinContestar => Paleta.Gris;
 
     public CursoVista(Curso curso)
     {
@@ -48,9 +49,9 @@ public class AsignaturaVista : TarjetaVista
     public int Correctas { get; }
     public int Incorrectas { get; }
     public int SinContestar { get; }
-    public Microsoft.Maui.Graphics.Color ColorCorrectas => Paleta.Verde;
-    public Microsoft.Maui.Graphics.Color ColorIncorrectas => Paleta.Rojo;
-    public Microsoft.Maui.Graphics.Color ColorSinContestar => Paleta.Gris;
+    public Color ColorCorrectas => Paleta.Verde;
+    public Color ColorIncorrectas => Paleta.Rojo;
+    public Color ColorSinContestar => Paleta.Gris;
     public List<TemaVista> Temas { get; }
 
     public AsignaturaVista(Asignatura asignatura)

@@ -9,6 +9,7 @@
              xmlns:comp="clr-namespace:ExamForge.Views.Componentes"
              Shell.NavBarIsVisible="False"
              BackgroundColor="White">
+
     <Grid RowDefinitions="Auto,*,Auto">
         <comp:NavbarView MostrarAtras="True" AtrasClicked="CancelarClicked" />
 
@@ -23,7 +24,7 @@
                 SelectionMode="None">
                 <CollectionView.EmptyView>
                     <Label Text="Esta asignatura aún no tiene temas." HorizontalTextAlignment="Center"
-                           TextColor="{StaticResource Texto}" />
+                        TextColor="{StaticResource Texto}" />
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
@@ -39,37 +40,38 @@
             </CollectionView>
 
             <Label x:Name="DisponiblesLabel"
-               Grid.Row="3"
-               Text="{Binding Disponibles, StringFormat='Preguntas disponibles: {0}'}"
-               TextColor="{StaticResource Texto}" />
+                Grid.Row="3"
+                Text="{Binding Disponibles, StringFormat='Preguntas disponibles: {0}'}"
+                TextColor="{StaticResource Texto}" />
 
-                    <VerticalStackLayout Grid.Row="4" Spacing="4">
-                        <Label Text="Número de preguntas"
-                               FontAttributes="Bold"
-                               TextColor="{StaticResource Texto}" />
+            <VerticalStackLayout Grid.Row="4" Spacing="4">
+                <Label Text="Número de preguntas"
+                    FontAttributes="Bold"
+                    TextColor="{StaticResource Texto}" />
 
-                        <Entry x:Name="CantidadEntry"
-                               Keyboard="Numeric"
-                               Placeholder="Ej.: 10"
-                               Text="{Binding CantidadPreguntas, Mode=TwoWay}" />
+                <Entry x:Name="CantidadEntry"
+                    Keyboard="Numeric"
+                    Placeholder="Ej.: 10"
+                    Text="{Binding CantidadPreguntas, Mode=TwoWay}" />
 
-                        <Label x:Name="ErrorLabel"
-                           Text="{Binding MensajeError}"
-                           TextColor="{StaticResource Error}"
-                           IsVisible="False" />
+                <Label x:Name="ErrorLabel"
+                    Text="{Binding MensajeError}"
+                    TextColor="{StaticResource Error}"
+                    IsVisible="False" />
             </VerticalStackLayout>
 
             <Grid Grid.Row="5" ColumnDefinitions="*,*" ColumnSpacing="8">
                 <Button Text="Cancelar" Style="{StaticResource BotonSecundario}" Clicked="CancelarClicked" />
                 <Button x:Name="IniciarButton"
-                        Grid.Column="1"
-                        Text="Iniciar"
-                        Style="{StaticResource BotonPrincipal}"
-                        IsEnabled="{Binding PuedeIniciar}"
-                        Command="{Binding IniciarCuestionarioCommand}" />
+                    Grid.Column="1"
+                    Text="Iniciar"
+                    Style="{StaticResource BotonPrincipal}"
+                    IsEnabled="{Binding PuedeIniciar}"
+                    Command="{Binding IniciarCuestionarioCommand}" />
             </Grid>
         </Grid>
 
         <comp:FooterView Grid.Row="2" />
     </Grid>
+
 </ContentPage>

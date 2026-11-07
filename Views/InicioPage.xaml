@@ -10,6 +10,7 @@
              xmlns:comp="clr-namespace:ExamForge.Views.Componentes"
              Shell.NavBarIsVisible="False"
              BackgroundColor="White">
+
     <Grid RowDefinitions="Auto,*,Auto">
         <comp:NavbarView MostrarSesion="True" PerfilClicked="PerfilClicked" />
 
@@ -18,18 +19,18 @@
 
             <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
                 <Label Text="Mis cursos" FontSize="18" FontAttributes="Bold" VerticalOptions="Center"
-                       TextColor="{StaticResource Texto}" />
+                    TextColor="{StaticResource Texto}" />
                 <ImageButton x:Name="EliminarSeleccionButton" Grid.Column="1" Source="delete.png" IsVisible="False"
-                             WidthRequest="48" HeightRequest="40"
-                             Padding="8" Aspect="AspectFit" Clicked="EliminarSeleccionClicked" />
+                    WidthRequest="48" HeightRequest="40"
+                    Padding="8" Aspect="AspectFit" Clicked="EliminarSeleccionClicked" />
                 <Button Grid.Column="2" Text="+" FontSize="22" WidthRequest="48"
-                        Style="{StaticResource BotonPequenoAcento}" Clicked="AnadirClicked" />
+                    Style="{StaticResource BotonPequenoAcento}" Clicked="AnadirClicked" />
             </Grid>
 
             <CollectionView x:Name="ListaCursos" Grid.Row="2" SelectionMode="None">
                 <CollectionView.EmptyView>
                     <Label Text="No hay cursos creados…" HorizontalTextAlignment="Center" VerticalOptions="Center"
-                           TextColor="{StaticResource Texto}" />
+                        TextColor="{StaticResource Texto}" />
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
@@ -37,46 +38,52 @@
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="6">
                                 <Grid ColumnDefinitions="Auto,40,Auto" ColumnSpacing="0">
                                     <CheckBox Opacity="1" IsEnabled="True" CheckedChanged="SeleccionCambiada"
-                                              IsChecked="{Binding Seleccionado, Mode=TwoWay}" Color="{StaticResource AzulOscuro}"
-                                              VerticalOptions="Center" />
+                                        IsChecked="{Binding Seleccionado, Mode=TwoWay}" Color="{StaticResource AzulOscuro}"
+                                        VerticalOptions="Center" />
                                     <ImageButton Grid.Column="1" Source="edit.png" Clicked="EditarClicked" IsVisible="True"
-                                                 WidthRequest="40" HeightRequest="40" Padding="4,8,12,8"
-                                                 BackgroundColor="Transparent" Aspect="AspectFit"
-                                                 VerticalOptions="Center" />
+                                        WidthRequest="40" HeightRequest="40" Padding="4,8,12,8"
+                                        BackgroundColor="Transparent" Aspect="AspectFit"
+                                        VerticalOptions="Center" />
                                     <Border Grid.Column="2" BackgroundColor="{StaticResource AzulOscuro}" StrokeThickness="0"
-                                            StrokeShape="RoundRectangle 8" Padding="8,1" VerticalOptions="Center">
+                                        StrokeShape="RoundRectangle 8" Padding="8,1" VerticalOptions="Center">
                                         <Label Text="{Binding Siglas}" TextColor="White" FontAttributes="Bold" FontSize="16" />
                                     </Border>
                                 </Grid>
+
                                 <Label Grid.Row="1" Text="{Binding Nombre}" FontAttributes="Bold" FontSize="16"
-                                       MaxLines="2" LineBreakMode="WordWrap" TextColor="{StaticResource Texto}">
+                                    MaxLines="2" LineBreakMode="WordWrap" TextColor="{StaticResource Texto}">
                                     <Label.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="CursoTapped" />
                                     </Label.GestureRecognizers>
                                 </Label>
+
                                 <VerticalStackLayout Grid.Row="2" Spacing="6">
                                     <Button Text="{Binding TextoDesplegable, StringFormat='Asignaturas {0}'}"
-                                            BackgroundColor="{StaticResource AzulClaro}" TextColor="{StaticResource AzulOscuro}"
-                                            FontSize="16" FontAttributes="Bold" Padding="12,6" CornerRadius="10"
-                                            HorizontalOptions="Start" Clicked="DesplegarClicked" />
+                                        BackgroundColor="{StaticResource AzulClaro}" TextColor="{StaticResource AzulOscuro}"
+                                        FontSize="16" FontAttributes="Bold" Padding="12,6" CornerRadius="10"
+                                        HorizontalOptions="Start" Clicked="DesplegarClicked" />
+
                                     <VerticalStackLayout IsVisible="{Binding Desplegado}" Spacing="2">
                                         <VerticalStackLayout BindableLayout.ItemsSource="{Binding NombresAsignaturas}">
                                             <BindableLayout.ItemTemplate>
                                                 <DataTemplate>
                                                     <Border BackgroundColor="#B0C4DE" StrokeThickness="0"
-                                                            StrokeShape="RoundRectangle 8" Padding="8,4" Margin="0,2">
+                                                        StrokeShape="RoundRectangle 8" Padding="8,4" Margin="0,2">
                                                         <Label Text="{Binding .}" TextColor="{StaticResource Texto}" />
                                                     </Border>
                                                 </DataTemplate>
                                             </BindableLayout.ItemTemplate>
                                         </VerticalStackLayout>
+
                                         <Label Text="Aún no hay asignaturas" FontAttributes="Italic"
-                                               IsVisible="{Binding SinAsignaturas}" TextColor="{StaticResource Texto}" />
+                                            IsVisible="{Binding SinAsignaturas}" TextColor="{StaticResource Texto}" />
                                     </VerticalStackLayout>
                                 </VerticalStackLayout>
+
                                 <VerticalStackLayout Grid.Column="1" Grid.RowSpan="3" Spacing="2"
-                                                     HorizontalOptions="Center" VerticalOptions="Start">
+                                    HorizontalOptions="Center" VerticalOptions="Start">
                                     <GraphicsView Drawable="{Binding Queso}" WidthRequest="84" HeightRequest="84" />
+
                                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
                                         <Label Text="{Binding Correctas}" TextColor="{Binding ColorCorrectas}" FontSize="12" />
                                         <Label Text="{Binding Incorrectas}" TextColor="{Binding ColorIncorrectas}" FontSize="12" />
@@ -93,7 +100,8 @@
         <comp:FooterView Grid.Row="2" />
 
         <comp:FormularioPopup x:Name="PopupCurso" Grid.RowSpan="3" PlaceholderTitulo="Título del curso"
-                              Confirmado="CursoConfirmado" />
+            Confirmado="CursoConfirmado" />
         <comp:PerfilPopup x:Name="Perfil" Grid.RowSpan="3" Guardado="PerfilGuardado" />
     </Grid>
+
 </ContentPage>

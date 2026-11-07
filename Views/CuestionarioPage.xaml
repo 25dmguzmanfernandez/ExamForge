@@ -11,6 +11,7 @@
              xmlns:comp="clr-namespace:ExamForge.Views.Componentes"
              Shell.NavBarIsVisible="False"
              BackgroundColor="White">
+
     <Grid RowDefinitions="Auto,Auto,*,Auto,Auto">
         <comp:NavbarView MostrarAtras="True" AtrasClicked="AtrasClicked" />
 
@@ -28,9 +29,9 @@
                                     <BindableLayout.ItemTemplate>
                                         <DataTemplate>
                                             <RadioButton Content="{Binding Texto}" GroupName="{Binding Grupo}"
-                                                         IsChecked="{Binding Seleccionada}"
-                                                         BackgroundColor="{Binding Fondo}" TextColor="{Binding ColorTexto}"
-                                                         InputTransparent="{Binding SoloLectura}" />
+                                                IsChecked="{Binding Seleccionada}"
+                                                BackgroundColor="{Binding Fondo}" TextColor="{Binding ColorTexto}"
+                                                InputTransparent="{Binding SoloLectura}" />
                                         </DataTemplate>
                                     </BindableLayout.ItemTemplate>
                                 </VerticalStackLayout>
@@ -42,7 +43,7 @@
         </ScrollView>
 
         <Button x:Name="FinalizarButton" Grid.Row="3" Text="Finalizar" Style="{StaticResource BotonPrincipal}"
-                Margin="16,8" Clicked="FinalizarClicked" />
+            Margin="16,8" Clicked="FinalizarClicked" />
 
         <comp:FooterView Grid.Row="4" />
 
@@ -62,4 +63,5 @@
             </Border>
         </Grid>
     </Grid>
+
 </ContentPage>

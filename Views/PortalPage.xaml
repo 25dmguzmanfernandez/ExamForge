@@ -10,6 +10,7 @@
              xmlns:comp="clr-namespace:ExamForge.Views.Componentes"
              Shell.NavBarIsVisible="False"
              BackgroundColor="White">
+
     <Grid RowDefinitions="Auto,*,Auto">
         <comp:NavbarView />
 
@@ -17,18 +18,18 @@
             <VerticalStackLayout Padding="24" Spacing="14" VerticalOptions="Center">
                 <Label x:Name="TituloLabel" Style="{StaticResource Titulo}" HorizontalOptions="Center" />
                 <Label x:Name="InfoLabel"
-                   Text="{Binding MensajeInfo}"
-                   TextColor="{StaticResource Verde}"
-                   HorizontalTextAlignment="Center"
-                   IsVisible="False" />
+                    Text="{Binding MensajeInfo}"
+                    TextColor="{StaticResource Verde}"
+                    HorizontalTextAlignment="Center"
+                    IsVisible="False" />
 
                 <!-- Estado Elegir -->
                 <VerticalStackLayout x:Name="ElegirLayout" Spacing="12">
-                        <Button Text="Iniciar sesión"
+                    <Button Text="Iniciar sesión"
                         Style="{StaticResource BotonSecundario}"
                         Command="{Binding IrLoginCommand}" />
 
-                        <Button Text="Crear usuario"
+                    <Button Text="Crear usuario"
                         Style="{StaticResource BotonPrincipal}"
                         Command="{Binding IrRegistroCommand}" />
                 </VerticalStackLayout>
@@ -36,33 +37,33 @@
                 <!-- Estados Registro y Login -->
                 <Border x:Name="FormularioBorder" Style="{StaticResource Tarjeta}" IsVisible="False">
                     <VerticalStackLayout Spacing="8">
-                           <Entry x:Name="NombreEntry"
-                           Placeholder="Nombre de usuario"
-                           Text="{Binding Nombre}" />
+                        <Entry x:Name="NombreEntry"
+                            Placeholder="Nombre de usuario"
+                            Text="{Binding Nombre}" />
 
-                            <Entry x:Name="ApellidosEntry"
-                           Placeholder="Apellidos"
-                           Text="{Binding Apellidos}" />
+                        <Entry x:Name="ApellidosEntry"
+                            Placeholder="Apellidos"
+                            Text="{Binding Apellidos}" />
 
-                           <Entry x:Name="CorreoEntry"
-                           Placeholder="Correo electrónico"
-                           Keyboard="Email"
-                           Text="{Binding Email}" />
+                        <Entry x:Name="CorreoEntry"
+                            Placeholder="Correo electrónico"
+                            Keyboard="Email"
+                            Text="{Binding Email}" />
 
-                           <Entry x:Name="ClaveEntry"
-                           Placeholder="Contraseña"
-                           IsPassword="True"
-                           Text="{Binding Password}" />
+                        <Entry x:Name="ClaveEntry"
+                            Placeholder="Contraseña"
+                            IsPassword="True"
+                            Text="{Binding Password}" />
 
-                           <Entry x:Name="ConfirmarEntry"
-                           Placeholder="Confirmar contraseña"
-                           IsPassword="True"
-                           Text="{Binding ConfirmarPassword}" />
+                        <Entry x:Name="ConfirmarEntry"
+                            Placeholder="Confirmar contraseña"
+                            IsPassword="True"
+                            Text="{Binding ConfirmarPassword}" />
 
-                            <Label x:Name="ErrorLabel"
-                           Text="{Binding MensajeError}"
-                           TextColor="{StaticResource Error}"
-                           IsVisible="False" />
+                        <Label x:Name="ErrorLabel"
+                            Text="{Binding MensajeError}"
+                            TextColor="{StaticResource Error}"
+                            IsVisible="False" />
                     </VerticalStackLayout>
                 </Border>
 
@@ -71,10 +72,11 @@
                     Text="Continuar"
                     Command="{Binding ProcesarAutenticacionCommand}" />
                 <Button x:Name="VolverButton" Text="Volver" Style="{StaticResource BotonPestana}" HorizontalOptions="Center"
-                        IsVisible="False" Command="{Binding VolverCommand}" />
+                    IsVisible="False" Command="{Binding VolverCommand}" />
             </VerticalStackLayout>
         </ScrollView>
 
         <comp:FooterView Grid.Row="2" />
     </Grid>
+
 </ContentPage>
