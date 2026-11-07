@@ -20,12 +20,15 @@ namespace ExamForge
 
             //Todos los servicios y ViewModels se registran usando 'builder.Services'
             builder.Services.AddSingleton<DataService>();
+            builder.Services.AddSingleton<AppShell>();
 
             // ViewModels Únicos o Globales
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<HomeViewModel>();
 
             // ViewModels de Vistas de Detalle Dinámicas
+            builder.Services.AddTransient<AsignaturasViewModel>();
+            builder.Services.AddTransient<AsignaturasPage>();
             builder.Services.AddTransient<AsignaturaViewModel>();
             builder.Services.AddTransient<TemaViewModel>();
             builder.Services.AddTransient<ConfigurarTestViewModel>();
