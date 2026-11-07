@@ -1,33 +1,47 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<!--
+  PortalPage (ventana 1: inicio / login). Tres estados sobre la misma ventana:
+  Elegir (botones Iniciar sesión / Crear usuario), Registro (5 campos) y Login (usuario y contraseña).
+  Navbar y footer comunes. El botón de acción aparece cuando todos los campos visibles están rellenos.
+-->
 <ContentPage x:Class="ExamForge.Views.PortalPage"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:comp="clr-namespace:ExamForge.Views.Componentes"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="{StaticResource AzulOscuro}">
-    <ScrollView>
-        <VerticalStackLayout Padding="30" Spacing="12" VerticalOptions="Center">
+             BackgroundColor="White">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <comp:NavbarView />
 
-            <Label Text="ExamForge" FontSize="36" FontAttributes="Bold"
-                   TextColor="White" HorizontalOptions="Center" />
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="24" Spacing="14" VerticalOptions="Center">
+                <Label x:Name="TituloLabel" Style="{StaticResource Titulo}" HorizontalOptions="Center" />
+                <Label x:Name="InfoLabel" TextColor="{StaticResource Verde}" HorizontalTextAlignment="Center" IsVisible="False" />
 
-            <Label x:Name="TituloLabel" FontSize="16" TextColor="{StaticResource AzulClaro}"
-                   HorizontalOptions="Center" Margin="0,0,0,16" />
-
-            <Border Style="{StaticResource Tarjeta}">
-                <VerticalStackLayout Spacing="8">
-                    <Entry x:Name="NombreEntry" Placeholder="Nombre" MaxLength="30" TextColor="{StaticResource Texto}" />
-
-                    <!-- Solo se ven la primera vez (registro) -->
-                    <Entry x:Name="ApellidoEntry" Placeholder="Apellido" MaxLength="40" TextColor="{StaticResource Texto}" />
-                    <Entry x:Name="CorreoEntry" Placeholder="Correo electrónico" Keyboard="Email" MaxLength="60" TextColor="{StaticResource Texto}" />
-
-                    <Entry x:Name="ClaveEntry" Placeholder="Contraseña" IsPassword="True" MaxLength="30" TextColor="{StaticResource Texto}" />
-
-                    <Label x:Name="ErrorLabel" TextColor="{StaticResource Error}" IsVisible="False" />
+                <!-- Estado Elegir -->
+                <VerticalStackLayout x:Name="ElegirLayout" Spacing="12">
+                    <Button Text="Iniciar sesión" Style="{StaticResource BotonSecundario}" Clicked="IrLoginClicked" />
+                    <Button Text="Crear usuario" Style="{StaticResource BotonPrincipal}" Clicked="IrRegistroClicked" />
                 </VerticalStackLayout>
-            </Border>
 
-            <Button x:Name="AccederButton" Style="{StaticResource BotonPrincipal}" Clicked="AccederClicked" Margin="0,8,0,0" />
-        </VerticalStackLayout>
-    </ScrollView>
+                <!-- Estados Registro y Login -->
+                <Border x:Name="FormularioBorder" Style="{StaticResource Tarjeta}" IsVisible="False">
+                    <VerticalStackLayout Spacing="8">
+                        <Entry x:Name="NombreEntry" Placeholder="Nombre de usuario" MaxLength="30" TextChanged="CampoCambiado" />
+                        <Entry x:Name="ApellidosEntry" Placeholder="Apellidos" MaxLength="40" TextChanged="CampoCambiado" />
+                        <Entry x:Name="CorreoEntry" Placeholder="Correo electrónico" Keyboard="Email" MaxLength="60" TextChanged="CampoCambiado" />
+                        <Entry x:Name="ClaveEntry" Placeholder="Contraseña" IsPassword="True" MaxLength="30" TextChanged="CampoCambiado" />
+                        <Entry x:Name="ConfirmarEntry" Placeholder="Confirmar contraseña" IsPassword="True" MaxLength="30" TextChanged="CampoCambiado" />
+                        <Label x:Name="ErrorLabel" TextColor="{StaticResource Error}" IsVisible="False" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Button x:Name="AccionButton" Style="{StaticResource BotonPrincipal}" IsVisible="False" Clicked="AccionClicked" />
+                <Button x:Name="VolverButton" Text="Volver" Style="{StaticResource BotonPestana}" HorizontalOptions="Center"
+                        IsVisible="False" Clicked="VolverClicked" />
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <comp:FooterView Grid.Row="2" />
+    </Grid>
 </ContentPage>

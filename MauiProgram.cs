@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using ExamForge.Services;
+﻿using ExamForge.Services;
 using ExamForge.ViewModels;
+using ExamForge.Views;
+using Microsoft.Extensions.Logging;
 
 namespace ExamForge
 {
@@ -29,6 +30,10 @@ namespace ExamForge
             builder.Services.AddTransient<TemaViewModel>();
             builder.Services.AddTransient<ConfigurarTestViewModel>();
             builder.Services.AddTransient<CuestionarioViewModel>();
+
+            // y el resto de ViewModels
+            builder.Services.AddTransient<PortalPage>();
+            builder.Services.AddTransient<InicioPage>();
 
 
 #if DEBUG
