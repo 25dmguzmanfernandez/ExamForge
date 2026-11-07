@@ -121,13 +121,7 @@ public partial class ConfigurarTestViewModel : ObservableObject
         _dataService.AsignaturaEnCurso = AsignaturaActual;
         _dataService.CuestionarioEnCurso = cuestionario;
 
-        await Shell.Current.GoToAsync(
-            $"../{nameof(Views.CuestionarioPage)}",
-            new Dictionary<string, object>
-            {
-                ["asignatura"] = AsignaturaActual,
-                ["cuestionario"] = cuestionario
-            });
+        await Shell.Current.GoToAsync($"../{nameof(ExamForge.Views.CuestionarioPage)}");
     }
 }
 

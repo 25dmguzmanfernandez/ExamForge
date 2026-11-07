@@ -1,78 +1,69 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using ExamForge.Models;
 using ExamForge.Services;
 
-namespace ExamForge.ViewModels
+namespace ExamForge.ViewModels;
+
+public partial class CuestionarioViewModel : ObservableObject
 {
-    public partial class CuestionarioViewModel : ObservableObject
+    private readonly DataService _dataService;
+
+    [ObservableProperty] private Cuestionario? cuestionarioActual;
+    [ObservableProperty] private bool esRevision;
+
+    public CuestionarioViewModel(DataService dataService)
     {
-        private readonly DataService _dataService;
+        _dataService = dataService;
+    }
 
-        [ObservableProperty]
-        private Cuestionario cuestionarioActual;
+    public void Inicializar(string? examenId = null)
+    {
+        EsRevision = !string.IsNullOrWhiteSpace(examenId);
 
-        [ObservableProperty]
-        private int indicePreguntaActual = 0;
-
-        [ObservableProperty]
-        private Pregunta preguntaActual;
-
-        [ObservableProperty]
-        private string textoProgreso; // Ej: "Pregunta 3 de 10"
-
-        public CuestionarioViewModel(DataService dataService)
+        if (EsRevision)
         {
-            _dataService = dataService;
-        }
-
-        // Se ejecuta al abrir la pantalla pasando el ID del test que generó la pantalla anterior
-        public void Inicializar(string cuestionarioId)
-        {
-            CuestionarioActual = _dataService.ObtenerUsuarios()
-                .SelectMany(u => u.Cursos)
+            CuestionarioActual = _dataService.UsuarioActivo?
+                .Cursos
                 .SelectMany(c => c.Asignaturas)
                 .SelectMany(a => a.Cuestionarios)
-                .FirstOrDefault(c => c.Id == cuestionarioId);
+                .FirstOrDefault(c => c.Id == examenId);
 
-            if (CuestionarioActual != null && CuestionarioActual.Preguntas.Any())
+            return;
+        }
+
+        CuestionarioActual = _dataService.CuestionarioEnCurso;
+    }
+
+    public double Finalizar(Dictionary<string, int> respuestas)
+    {
+        if (CuestionarioActual is null || _dataService.AsignaturaEnCurso is null)
+            return 0;
+
+        var preguntasPorId = CuestionarioActual.Preguntas
+            .ToDictionary(p => p.Id);
+
+        foreach (var respuesta in respuestas)
+        {
+            if (preguntasPorId.TryGetValue(respuesta.Key, out var pregunta) &&
+                respuesta.Value >= 0 &&
+                respuesta.Value < pregunta.Opciones.Count)
             {
-                IndicePreguntaActual = 0;
-                ActualizarEstadoPantalla();
+                CuestionarioActual.RespuestasUsuario[respuesta.Key] = respuesta.Value;
             }
         }
 
-        private void ActualizarEstadoPantalla()
-        {
-            PreguntaActual = CuestionarioActual.Preguntas[IndicePreguntaActual];
-            TextoProgreso = $"Pregunta {IndicePreguntaActual + 1} de {CuestionarioActual.TotalPreguntas}";
-        }
+        _dataService.AsignaturaEnCurso.Cuestionarios.Add(CuestionarioActual);
+        _dataService.GuardarDatos();
 
-        // Este comando se enlaza al botón "Siguiente" del XAML
-        [RelayCommand]
-        private void SiguientePregunta()
-        {
-            if (IndicePreguntaActual < CuestionarioActual.TotalPreguntas - 1)
-            {
-                IndicePreguntaActual++;
-                ActualizarEstadoPantalla();
-            }
-        }
+        _dataService.CuestionarioEnCurso = null;
+        _dataService.AsignaturaEnCurso = null;
 
-        // Este comando guarda la respuesta del usuario cuando pulsa una opción en la pantalla
-        [RelayCommand]
-        private void RegistrarRespuesta(int indiceOpcionSeleccionada)
-        {
-            if (PreguntaActual == null) return;
+        return Math.Round(CuestionarioActual.PorcentajeAcierto / 10, 1);
+    }
 
-            // Guardamos la respuesta en el diccionario del cuestionario
-            CuestionarioActual.RespuestasUsuario[PreguntaActual.Id] = indiceOpcionSeleccionada;
-
-            // Sincronizamos los datos en tu archivo JSON local
-            _dataService.GuardarDatos();
-
-            // Avisamos a la pantalla de que el cuestionario se actualizó (recalcula aciertos en la UI)
-            OnPropertyChanged(nameof(CuestionarioActual));
-        }
+    public void CancelarIntento()
+    {
+        _dataService.CuestionarioEnCurso = null;
+        _dataService.AsignaturaEnCurso = null;
     }
 }

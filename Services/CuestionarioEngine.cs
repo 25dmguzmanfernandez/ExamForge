@@ -27,7 +27,11 @@ namespace ExamForge.Services
             if (cantidadTemas == 1)
             {
                 var banco = temasSeleccionados.First().BancoDePreguntas.Where(p => p.EsValida()).ToList();
-                return banco.OrderBy(_ => _random.Next()).Take(cantidadTotal).ToList();
+                return banco
+                    .OrderBy(_ => _random.Next())
+                    .Take(cantidadTotal)
+                    .Select(CopiarConOpcionesBarajadas)
+                    .ToList();
             }
 
             // CASO 2: Múltiples temas - Reparto Equitativo
@@ -65,7 +69,31 @@ namespace ExamForge.Services
             }
 
             // Barajamos el examen completo final para que no salgan ordenadas por bloques de temas
-            return preguntasFinales.OrderBy(_ => _random.Next()).ToList();
+            return preguntasFinales
+                .OrderBy(_ => _random.Next())
+                .Select(CopiarConOpcionesBarajadas)
+                .ToList();
+        }
+
+        private static Pregunta CopiarConOpcionesBarajadas(Pregunta original)
+        {
+            var indices = Enumerable.Range(0, original.Opciones.Count).ToArray();
+
+            // Barajado Fisher-Yates.
+            for (int i = indices.Length - 1; i > 0; i--)
+            {
+                int j = _random.Next(i + 1);
+                (indices[i], indices[j]) = (indices[j], indices[i]);
+            }
+
+            return new Pregunta
+            {
+                Id = original.Id,
+                Enunciado = original.Enunciado,
+                FeedbackExplicacion = original.FeedbackExplicacion,
+                Opciones = indices.Select(i => original.Opciones[i]).ToList(),
+                RespuestaCorrecta = Array.IndexOf(indices, original.RespuestaCorrecta)
+            };
         }
     }
 }

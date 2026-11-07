@@ -190,10 +190,12 @@ public partial class BancoPreguntasPage : ContentPage
         var examen = Contexto<ExamenVista>(sender);
         if (examen == null) return;
 
-        await Shell.Current.GoToAsync(nameof(CuestionarioPage), new Dictionary<string, object>
-        {
-            { "examen", examen.Modelo }
-        });
+        await Shell.Current.GoToAsync(
+            nameof(CuestionarioPage),
+            new Dictionary<string, object>
+            {
+                ["examenId"] = examen.Modelo.Id
+            });
     }
 
     // ---------- Cuestionario ----------
