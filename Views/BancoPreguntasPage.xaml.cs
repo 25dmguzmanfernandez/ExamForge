@@ -107,10 +107,11 @@ public partial class BancoPreguntasPage : ContentPage
     // ---------- Banco: crear / editar / eliminar ----------
     private async void AnadirClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync(nameof(NuevaPreguntaPage), new Dictionary<string, object>
-        {
-            { "tema", vm.TemaActual! }
-        });
+        await Shell.Current.GoToAsync(nameof(NuevaPreguntaPage),
+            new Dictionary<string, object>
+            {
+                ["temaId"] = vm.TemaActual!.Id
+            });
     }
 
     private async void EditarClicked(object sender, EventArgs e)
@@ -118,11 +119,12 @@ public partial class BancoPreguntasPage : ContentPage
         var vista = Contexto<PreguntaVista>(sender);
         if (vista == null) return;
 
-        await Shell.Current.GoToAsync(nameof(NuevaPreguntaPage), new Dictionary<string, object>
-        {
-            { "tema", vm.TemaActual! },
-            { "pregunta", vista.Modelo }
-        });
+        await Shell.Current.GoToAsync(nameof(NuevaPreguntaPage),
+    new Dictionary<string, object>
+    {
+        ["temaId"] = vm.TemaActual!.Id,
+        ["preguntaId"] = vista.Modelo.Id
+    });
     }
 
     private async void EliminarClicked(object sender, EventArgs e)
@@ -133,7 +135,7 @@ public partial class BancoPreguntasPage : ContentPage
         bool ok = await DisplayAlertAsync("Eliminar pregunta", "¿Eliminar esta pregunta del banco?", "Eliminar", "Cancelar");
         if (!ok) return;
 
-        Provisional.EliminarPreguntas(vm.TemaActual, new[] { vista.Modelo }); // TODO controlador
+        vm.EliminarPreguntas(new[] { vista.Modelo.Id });
         Recargar();
     }
 

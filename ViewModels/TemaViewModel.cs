@@ -26,23 +26,16 @@ public partial class TemaViewModel : ObservableObject
     public void Inicializar(string temaId)
     {
         AsignaturaActual = _dataService.UsuarioActivo?
-    .Cursos
-    .SelectMany(c => c.Asignaturas)
-    .FirstOrDefault(a => a.Temas.Any(t => t.Id == temaId));
-
-        _temaActual = AsignaturaActual?.Temas.FirstOrDefault(t => t.Id == temaId);
-
-        var asignatura = _dataService.UsuarioActivo?
             .Cursos
             .SelectMany(c => c.Asignaturas)
             .FirstOrDefault(a => a.Temas.Any(t => t.Id == temaId));
 
-        _temaActual = asignatura?.Temas.FirstOrDefault(t => t.Id == temaId);
+        _temaActual = AsignaturaActual?.Temas.FirstOrDefault(t => t.Id == temaId);
 
         BancoDePreguntas.Clear();
         Cuestionarios.Clear();
 
-        if (_temaActual is null || asignatura is null)
+        if (_temaActual is null || AsignaturaActual is null)
         {
             NombreTema = "";
             return;
@@ -57,7 +50,7 @@ public partial class TemaViewModel : ObservableObject
             .Select(p => p.Id)
             .ToHashSet();
 
-        foreach (var cuestionario in asignatura.Cuestionarios
+        foreach (var cuestionario in AsignaturaActual.Cuestionarios
                      .Where(c => c.Preguntas.Any(p => idsPreguntas.Contains(p.Id)))
                      .OrderByDescending(c => c.FechaCreacion))
         {
