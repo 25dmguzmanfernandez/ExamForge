@@ -34,6 +34,13 @@ public partial class LoginViewModel : ObservableObject
     private void IrRegistro()
     {
         LimpiarMensajes();
+
+        Nombre = "";
+        Apellidos = "";
+        Email = "";
+        Password = "";
+        ConfirmarPassword = "";
+
         Modo = "Registro";
     }
 
