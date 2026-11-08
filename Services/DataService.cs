@@ -18,6 +18,7 @@ namespace ExamForge.Services
         public DataService()
         {
             CargarDatos();
+            GeneradorDemo.Crear(this);
         }
 
         public List<Usuario> ObtenerUsuarios() => _usuarios;
