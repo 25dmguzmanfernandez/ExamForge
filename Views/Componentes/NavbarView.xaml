@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  NavbarView: barra superior común (logo + nombre de la app).
+  MostrarAtras="True": botón ‹ (evento AtrasClicked). MostrarSesion="True": icono de usuario (evento PerfilClicked)
+  y botón Salir, que pide confirmación y devuelve al portal en estado "elegir".
+-->
+<ContentView x:Class="ExamForge.Views.Componentes.NavbarView"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    
+    <Grid BackgroundColor="{StaticResource AzulOscuro}" Padding="8,8" ColumnSpacing="6"
+          ColumnDefinitions="Auto,*,Auto,Auto">
+
+        <Button x:Name="AtrasButton" Text="‹" FontSize="28" TextColor="White" IsVisible="False"
+                Style="{StaticResource BotonIcono}" Clicked="OnAtras" />
+
+        <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center" Margin="4,0">
+            
+            <Image Source="logo.png" WidthRequest="34" HeightRequest="34" Aspect="AspectFit" />
+            <Label Text="ExamForge" TextColor="White" FontSize="20" FontAttributes="Bold" VerticalOptions="Center" />
+            
+        </HorizontalStackLayout>
+
+        <ImageButton x:Name="PerfilButton" Grid.Column="2" Source="user.png" IsVisible="False"
+                     WidthRequest="40" HeightRequest="40" Padding="8" BackgroundColor="Transparent"
+                     Aspect="AspectFit" Clicked="OnPerfil" />
+
+        <Button x:Name="SalirButton" Grid.Column="3" Text="Salir" IsVisible="False"
+                Style="{StaticResource BotonPequenoAcento}" Padding="6,0" HeightRequest="26"
+                MinimumWidthRequest="0" MinimumHeightRequest="0" FontSize="13"
+                HorizontalOptions="End" VerticalOptions="Center" Clicked="OnSalir" />
+    </Grid>
+    
+</ContentView>
